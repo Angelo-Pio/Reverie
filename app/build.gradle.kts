@@ -43,6 +43,7 @@ dependencies {
 
 
     // Corrected line
+    implementation("androidx.compose.material3:material3:1.3.0-alpha06") // Or a newer version with carousel
     implementation("androidx.compose.material:material-icons-extended-android:1.6.8")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
