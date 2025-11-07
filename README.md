@@ -56,3 +56,7 @@ Models:
     * user
     * santino
     * relationship (creator/client)
+
+Other:
+
+Permissions

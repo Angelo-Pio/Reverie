@@ -41,6 +41,9 @@ android {
 
 dependencies {
 
+
+    // Corrected line
+    implementation("androidx.compose.material:material-icons-extended-android:1.6.8")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
