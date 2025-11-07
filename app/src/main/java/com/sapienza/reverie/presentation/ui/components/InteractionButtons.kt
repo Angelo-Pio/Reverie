@@ -96,28 +96,26 @@ fun ShareButton(type: ButtonType) {
         }
     }
 }
-
 @Composable
-fun ScanButton() {
-
-    CircularButton(icon = Icons.Filled.QrCodeScanner, onClick = {}, text = "Scan")
-
+fun ScanButton(onClick: () -> Unit) { // Add parameter
+    CircularButton(icon = Icons.Filled.QrCodeScanner, onClick = onClick, text = "Scan") // Pass it down
 }
 
 @Composable
-fun SaveButton() {
-    CircularButton(icon = Icons.Filled.Save, onClick = {})
+fun SaveButton(onClick: () -> Unit) { // Add parameter
+    CircularButton(icon = Icons.Filled.Save, onClick = onClick) // Pass it down
 }
 
 @Composable
-fun BackButton() {
-    CircularButton(icon = Icons.Filled.ArrowBackIosNew, onClick = {})
+fun BackButton(onClick: () -> Unit) { // Add parameter
+    CircularButton(icon = Icons.Filled.ArrowBackIosNew, onClick = onClick) // Pass it down
 }
 
 @Composable
-fun LinkButton() {
-    CircularButton(icon = Icons.Filled.Link, onClick = {})
+fun LinkButton(onClick: () -> Unit) { // Add parameter
+    CircularButton(icon = Icons.Filled.Link, onClick = onClick) // Pass it down
 }
+
 
 
 @Preview(showBackground = true)
@@ -127,9 +125,9 @@ fun ShareButtonPreview() {
         ShareButton(ButtonType.LINK)
         ShareButton(ButtonType.QR)
         ShareButton(ButtonType.DONE)
-        ScanButton()
-        BackButton()
-        LinkButton()
+        ScanButton(onClick = {})
+        BackButton(onClick = {})
+        LinkButton(onClick = {})
     }
 
 }
