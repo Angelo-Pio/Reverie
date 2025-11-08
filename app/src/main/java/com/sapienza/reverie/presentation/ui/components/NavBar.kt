@@ -21,7 +21,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.sapienza.reverie.ui.theme.GradientMagCyan
+import com.sapienza.reverie.ui.theme.NavBarColor
 import com.sapienza.reverie.ui.theme.ReverieTheme
 
 
@@ -36,7 +36,7 @@ fun NavBar(
     NavigationBar(
         modifier = modifier.background(
             brush = Brush.horizontalGradient(
-                colors = GradientMagCyan,
+                colors = NavBarColor,
                 // You can adjust startY and endY for where the gradient starts and ends
             )
         ),

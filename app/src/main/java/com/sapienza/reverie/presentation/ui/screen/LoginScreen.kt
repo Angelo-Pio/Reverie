@@ -42,6 +42,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sapienza.reverie.R
 import com.sapienza.reverie.presentation.theme.ReverieFontFamily
+import com.sapienza.reverie.ui.theme.GradientButton
+import com.sapienza.reverie.ui.theme.NavBarColor
 import com.sapienza.reverie.ui.theme.ReverieTheme
 
 @Composable
@@ -57,10 +59,11 @@ fun LoginScreen(
 
     // 5. Define the gradient colors
     val gradientColors = listOf(
-        Color.White,
-        Color.White,
         Color(0xFFDEF1ED),  // Light Blue
-        Color(0xFFE1D9FF), // Light Purple
+
+        Color.White,
+        Color(0xFFEBE6FF), // Light Purple
+
     )
 
     // 6. Wrap your content in a Box with a gradient background
@@ -68,7 +71,7 @@ fun LoginScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(
-                brush = Brush.verticalGradient(
+                brush = Brush.linearGradient(
                     colors = gradientColors,
                     // You can adjust startY and endY for where the gradient starts and ends
                 )

@@ -2,11 +2,7 @@ package com.sapienza.reverie.presentation.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.Cancel
-import androidx.compose.material.icons.filled.Collections
-import androidx.compose.material.icons.filled.Create
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.TextFields
@@ -20,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import com.sapienza.reverie.ui.theme.GradientMagCyan
+import com.sapienza.reverie.ui.theme.NavBarColor
 
 
 @Composable
@@ -28,7 +24,7 @@ fun EditBar() {
     NavigationBar (
         modifier = Modifier.background(
             brush = Brush.horizontalGradient(
-                colors = GradientMagCyan,
+                colors = NavBarColor,
                 // You can adjust startY and endY for where the gradient starts and ends
             )
         ),
