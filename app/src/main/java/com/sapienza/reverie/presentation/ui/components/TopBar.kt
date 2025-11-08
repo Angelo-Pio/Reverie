@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 
@@ -24,7 +25,7 @@ import com.sapienza.reverie.presentation.theme.ReverieFontFamily
 
 
 @Composable
-fun TopBar(modifier: Modifier = Modifier.clip(RoundedCornerShape(24.dp)).padding(6.dp).shadow(elevation = 6.dp)){
+fun TopBar(icon : ImageVector = Icons.Filled.Dashboard, title: String ="Reverie", modifier: Modifier = Modifier.clip(RoundedCornerShape(24.dp)).padding(6.dp).shadow(elevation = 6.dp)){
 
     NavigationBar (modifier){
         NavigationBarItem(
@@ -37,9 +38,9 @@ fun TopBar(modifier: Modifier = Modifier.clip(RoundedCornerShape(24.dp)).padding
                 val size = 30.dp
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)){
 
-                Icon(imageVector = Icons.Filled.Dashboard, contentDescription = null, Modifier.size(size))
+                Icon(imageVector = icon, contentDescription = null, Modifier.size(size))
                 Text(
-                    text = "Dashboard",
+                    text = title,
                     fontFamily = ReverieFontFamily("Bold"),
                     fontSize = size.value.sp
                 )}
