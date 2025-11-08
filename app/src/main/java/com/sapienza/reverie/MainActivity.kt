@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.sapienza.reverie.presentation.ui.components.CharmCarousel
 import com.sapienza.reverie.presentation.ui.components.GoogleSearchBar
+import com.sapienza.reverie.presentation.ui.screen.CollectionScreen
 import com.sapienza.reverie.presentation.ui.screen.DashboardScreen
 import com.sapienza.reverie.presentation.ui.screen.LoginScreen
 import com.sapienza.reverie.ui.theme.ReverieTheme
@@ -32,7 +33,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     // Your app's navigation or main screen goes here
-                   LoginScreen {  }
+                    CollectionScreen()
                 }
             }
         }

@@ -15,3 +15,20 @@ val CyanLogo30 = Color(0xFFACC8ED)
 val MagentaLogo30 = Color(0xFFD3B6F9)
 val MagentaLogo50 = Color(0xFFE7B2F6)
 
+val GradientMagCyan = listOf(
+
+    Color(0xFFDEF1ED),  // Light Blue
+    Color(0xFFE1D9FF), // Light Purple
+)
+
+val GradientButton= listOf(
+
+    Color.White, // Light Purple // Light Blue
+    Color(0xFFE1D9FF),  // Light Blue
+)
+
+val GradientMagCyanInverted= listOf(
+
+    Color(0xFFE1D9FF), // Light Purple
+    Color(0xFFDEF1ED),  // Light Blue
+)

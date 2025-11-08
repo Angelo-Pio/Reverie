@@ -6,12 +6,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 
+enum class CommentType{
+    IMAGE,
+    NORMAL
+}
+
 @Composable
-fun CommentList(fooSaints: List<Int>, modifier: Modifier = Modifier){
+fun CommentList(fooSaints: List<Int>, modifier: Modifier = Modifier, commentType : CommentType = CommentType.NORMAL){
 
     LazyColumn {
         items(fooSaints) { saint ->
+            if(commentType.equals(CommentType.IMAGE)){
             CharmCommentWithCharm(saint,"Saint $saint", charmImage = saint)
+
+            }else{
+                CharmComment(userImage = saint, username = "Saint $saint")
+            }
         }
     }
 
