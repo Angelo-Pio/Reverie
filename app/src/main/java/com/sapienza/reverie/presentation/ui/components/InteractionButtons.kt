@@ -46,9 +46,10 @@ fun CircularButton(icon: ImageVector, onClick: () -> Unit, text: String? = null)
             contentColor = Color.Black,
 
             ),
-        border = BorderStroke(width = 1.dp, color = Color.Black),
+        border = BorderStroke(width = 0.1.dp, color = Color.Black),
         contentPadding = PaddingValues(0.dp),
-        modifier = Modifier.size(buttonSize)
+        modifier = Modifier.size(buttonSize),
+        elevation = ButtonDefaults.elevatedButtonElevation(defaultElevation = 5.dp)
 
 
     ) {
@@ -88,7 +89,7 @@ fun ShareButton(type: ButtonType) {
 }
 @Composable
 fun ScanButton(onClick: () -> Unit) { // Add parameter
-    CircularButton(icon = Icons.Filled.QrCodeScanner, onClick = onClick, text = "Scan") // Pass it down
+    CircularButton(icon = Icons.Filled.QrCodeScanner, onClick = onClick) // Pass it down
 }
 
 @Composable

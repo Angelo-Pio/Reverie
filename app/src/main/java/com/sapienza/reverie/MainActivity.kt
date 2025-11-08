@@ -12,6 +12,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.sapienza.reverie.presentation.ui.components.CharmCarousel
+import com.sapienza.reverie.presentation.ui.components.GoogleSearchBar
+import com.sapienza.reverie.presentation.ui.screen.DashboardScreen
 import com.sapienza.reverie.ui.theme.ReverieTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,9 +21,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            ReverieTheme {
-
-            }
+            DashboardScreen()
         }
     }
 }

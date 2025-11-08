@@ -42,7 +42,7 @@ fun Charm(
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(2f / 3f) // Here is the key: 3:2 aspect ratio
-                .background(Color.Gray)
+                .background(Color.White)
         ) {
             Image(
                 painter = painterResource(id = imageUrl),
@@ -60,18 +60,13 @@ fun Charm(
 fun CharmPreview() {
 
 
-    Box(
-        modifier = Modifier
-            .padding(30.dp)
-            .size(height = 120.dp, width = 60.dp)
-            .aspectRatio(2f / 3f)
-    ) {
+
         // You'll need to add a placeholder image to your res/drawable folder
         // For now, let's assume you have one named 'placeholder_image'
         // If not, the preview might fail.
-
+    Box(modifier = Modifier.padding(vertical = 32.dp, horizontal = 32.dp)) {
         Charm(imageUrl = R.drawable.ic_launcher_background)
-
-
     }
+
+
 }
