@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material3.Icon
@@ -17,6 +18,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,29 +39,38 @@ fun SearchImageScreen(
 
     Scaffold(
         bottomBar = {
-            NavigationBar(
-                modifier = modifier.background(brush = Brush.horizontalGradient(colors = NavBarColor)),
-                containerColor = Color.Transparent,
-                content = {
-                    NavigationBarItem(
-                        icon = { Icon(Icons.Filled.Cancel, contentDescription = null) },
-                        label = { Text("Cancel") },
-                        selected = false,
-                        onClick = onHomeClick,
-                        colors = NavigationBarItemDefaults.colors(
+            Box(Modifier.clip(RoundedCornerShape(24.dp))
+                .padding(6.dp)
+                .shadow(elevation = 6.dp)) {
+                NavigationBar(
+                    modifier = modifier.background(brush = Brush.horizontalGradient(colors = NavBarColor)),
+                    containerColor = Color.Transparent,
+                    content = {
+                        NavigationBarItem(
+                            icon = { Icon(Icons.Filled.Cancel, contentDescription = null) },
+                            label = { Text("Cancel") },
+                            selected = false,
+                            onClick = onHomeClick,
+                            colors = NavigationBarItemDefaults.colors(
+
+                            )
+
 
                         )
 
-
-                    )
-
-                }
-            )
+                    }
+                )
+            }
         })
     { innerPadding ->
-        Column(modifier = Modifier.padding(innerPadding), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Column(
+            modifier = Modifier.padding(innerPadding),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
             GoogleSearchBar()
-            Box(Modifier.padding(13.dp).aspectRatio(2f/3f)){
+            Box(Modifier
+                .padding(13.dp)
+                .aspectRatio(2f / 3f)) {
                 Charm(imageUrl = R.drawable.saint_franca, onClick = onImageClick)
             }
 
