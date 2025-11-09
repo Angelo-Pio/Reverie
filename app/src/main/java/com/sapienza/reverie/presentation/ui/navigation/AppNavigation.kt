@@ -31,7 +31,7 @@ fun AppNavigation() {
             }
             entry<Screen.Home> {
                 DashboardScreen(
-                    onScanClick = { backstack.add(Screen.ScanQR) },
+                    onScanClick = { backstack.add(Screen.ScanQR) }, // TODO : this should redirect to a screen used to scan a QR code not share it !
                     onEditClick = { backstack.add(Screen.SearchImage) },
                     onHomeClick = { backstack.add(Screen.Home) },
                     onCollectionClick = { backstack.add(Screen.Collection) }
@@ -39,8 +39,10 @@ fun AppNavigation() {
                 )
             }
             entry<Screen.CharmEdit> {
+                //TODO: search implementation, saving image etc.
                 CharmEditScreen(
-                    onCancelClick = { backstack.add(Screen.Home) }
+                    onCancelClick = { backstack.add(Screen.Home) },
+                    onSaveClick = {backstack.add(Screen.Collection)}
                 )
             }
             entry<Screen.Collection> {
@@ -56,10 +58,13 @@ fun AppNavigation() {
                     charmModel = screen.charmModel,
                     onEditClick = { backstack.add(Screen.SearchImage) },
                     onCollectionClick = { backstack.add(Screen.Collection) },
-                    onHomeClick = { backstack.add(Screen.Home) }
+                    onHomeClick = { backstack.add(Screen.Home) },
+                    onQRShareClick  = {backstack.add(Screen.ScanQR)},
+                    //onLinkShareClick : () -> Unit = {} TODO: implement link sharing (copy on clipboard)
                 )
             }
             entry<Screen.ScanQR> {
+                //TODO: this will need an argument to generate the QR code from a link
                 ScanQrScreen(
                     onEditClick = { backstack.add(Screen.SearchImage) },
                     onCollectionClick = { backstack.add(Screen.Collection) },
@@ -67,6 +72,10 @@ fun AppNavigation() {
                 )
             }
             entry<Screen.SearchImage> {
+                /*TODO: search is used for take first background picture and add stickers, this should be impleemented
+                * TODO:  selected image should be passed to edit screen
+                * */
+
                 SearchImageScreen(
                     onHomeClick = { backstack.add(Screen.Home) },
                     onImageClick = { backstack.add(Screen.CharmEdit) }

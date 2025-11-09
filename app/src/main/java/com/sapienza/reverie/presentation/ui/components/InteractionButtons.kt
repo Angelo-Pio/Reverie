@@ -37,7 +37,7 @@ import com.sapienza.reverie.ui.theme.ReverieTheme
 enum class ButtonType {
     SHARE,
     QR,
-    DONE
+    Link
 }
 
 
@@ -103,8 +103,8 @@ fun ShareButton(type: ButtonType, modifier: Modifier = Modifier, onClick: () -> 
 
         }
 
-        ButtonType.DONE -> {
-            CircularButton(icon = Icons.Filled.Done, onClick = onClick, modifier = modifier)
+        ButtonType.Link -> {
+            CircularButton(icon = Icons.Filled.Link, onClick = onClick, modifier = modifier)
         }
     }
 }
@@ -146,7 +146,7 @@ fun ShareButtonPreview() {
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
             ShareButton(ButtonType.SHARE)
             ShareButton(ButtonType.QR)
-            ShareButton(ButtonType.DONE)
+            ShareButton(ButtonType.Link)
             ScanButton(onClick = {})
             BackButton(onClick = {})
             LinkButton(onClick = {})

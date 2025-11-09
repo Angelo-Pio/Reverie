@@ -12,6 +12,10 @@ import androidx.compose.material3.FabPosition
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,6 +27,7 @@ import com.sapienza.reverie.presentation.ui.components.ButtonType
 import com.sapienza.reverie.presentation.ui.components.Charm
 import com.sapienza.reverie.presentation.ui.components.CommentList
 import com.sapienza.reverie.presentation.ui.components.CommentType
+import com.sapienza.reverie.presentation.ui.components.ExpandingActionButtons
 import com.sapienza.reverie.presentation.ui.components.NavBar
 import com.sapienza.reverie.presentation.ui.components.ShareButton
 import com.sapienza.reverie.presentation.ui.components.TopBar
@@ -39,9 +44,11 @@ fun CharmScreen(
     ),
     onCollectionClick: () -> Unit = {},
     onHomeClick: () -> Unit = {},
-    onEditClick: () -> Unit = {}
+    onEditClick: () -> Unit = {},
+    onQRShareClick : () -> Unit = {},
+    onLinkShareClick : () -> Unit = {}
 ){
-
+    var isExpanded by remember { mutableStateOf(false) }
     val saints = listOf(R.drawable.saint_franca,R.drawable.saint_miriam)
 
     Scaffold(
@@ -54,11 +61,12 @@ fun CharmScreen(
 
         Column(modifier =modifier.padding(innerPadding), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally){
 
-            Box(modifier = Modifier.padding(12.dp).weight(2f).aspectRatio(2f/3f), contentAlignment = Alignment.TopEnd){
-                Charm(modifier = Modifier.padding(15.dp), imageUrl = charmModel.imageUrl,)
-                ShareButton(type = ButtonType.SHARE, modifier = Modifier.size(45.dp), onClick = {
-                    /*TODO animation for buttons*/
-                })
+            Box(modifier = Modifier
+                .padding(12.dp)
+                .weight(2f)
+                .aspectRatio(2f / 3f), contentAlignment = Alignment.TopEnd){
+                Charm(modifier = Modifier.padding(15.dp), imageUrl = charmModel.imageUrl)
+                ExpandingActionButtons(isExpanded = isExpanded, onExpandToggle = { isExpanded = !isExpanded }, onQRShareClick = onQRShareClick, onLinkShareClick = onLinkShareClick)
             }
             HorizontalDivider(thickness = 2.dp, color = Color.LightGray, modifier = Modifier.padding(horizontal = 12.dp))
             CommentList(fooSaints = saints, commentType = CommentType.NORMAL)
