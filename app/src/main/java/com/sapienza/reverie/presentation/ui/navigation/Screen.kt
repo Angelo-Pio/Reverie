@@ -20,6 +20,9 @@ sealed interface Screen {
     @Serializable
     data object CharmEdit : Screen
 
+    @Serializable
+    data object SearchImage : Screen
+
     // IMPORTANT: Charm is now a data class holding the specific charm data
     @Serializable
     data class Charm(val charmModel: CharmModel) : Screen

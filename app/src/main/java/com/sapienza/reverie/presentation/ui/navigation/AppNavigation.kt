@@ -14,10 +14,11 @@ import com.sapienza.reverie.presentation.ui.screen.CollectionScreen
 import com.sapienza.reverie.presentation.ui.screen.DashboardScreen
 import com.sapienza.reverie.presentation.ui.screen.LoginScreen
 import com.sapienza.reverie.presentation.ui.screen.ScanQrScreen
+import com.sapienza.reverie.presentation.ui.screen.SearchImageScreen
 
 
 @Composable
-fun AppNavigation(){
+fun AppNavigation() {
 
     val backstack = remember { mutableStateListOf<Screen>(Screen.Login) }
 
@@ -25,44 +26,50 @@ fun AppNavigation(){
         backStack = backstack,
 
         entryProvider = entryProvider {
-            entry<Screen.Login>{
-                LoginScreen(onLoginClick = {backstack.add(Screen.Home)})
+            entry<Screen.Login> {
+                LoginScreen(onLoginClick = { backstack.add(Screen.Home) })
             }
-            entry<Screen.Home>{
+            entry<Screen.Home> {
                 DashboardScreen(
-                    onScanClick = {backstack.add(Screen.ScanQR)},
-                    onEditClick = {backstack.add(Screen.CharmEdit) },
-                    onHomeClick = {backstack.add(Screen.Home)},
-                    onCollectionClick = {backstack.add(Screen.Collection)}
+                    onScanClick = { backstack.add(Screen.ScanQR) },
+                    onEditClick = { backstack.add(Screen.SearchImage) },
+                    onHomeClick = { backstack.add(Screen.Home) },
+                    onCollectionClick = { backstack.add(Screen.Collection) }
 
                 )
             }
-            entry<Screen.CharmEdit>{
+            entry<Screen.CharmEdit> {
                 CharmEditScreen(
-                    onCancelClick = {backstack.add(Screen.Home)}
+                    onCancelClick = { backstack.add(Screen.Home) }
                 )
             }
-            entry<Screen.Collection>{
+            entry<Screen.Collection> {
                 CollectionScreen(
                     onCharmClick = { charmModel -> backstack.add(Screen.Charm(charmModel)) },
-                    onEditClick = {backstack.add(Screen.CharmEdit) },
-                    onHomeClick = {backstack.add(Screen.Home)},
-                    onCollectionClick = {backstack.add(Screen.Collection)},
+                    onEditClick = { backstack.add(Screen.SearchImage) },
+                    onHomeClick = { backstack.add(Screen.Home) },
+                    onCollectionClick = { backstack.add(Screen.Collection) },
                 )
             }
-            entry<Screen.Charm>{ screen ->
+            entry<Screen.Charm> { screen ->
                 CharmScreen(
                     charmModel = screen.charmModel,
-                    onEditClick =  {backstack.add(Screen.CharmEdit)},
-                    onCollectionClick = {backstack.add(Screen.Collection)},
-                    onHomeClick = {backstack.add(Screen.Home)}
+                    onEditClick = { backstack.add(Screen.SearchImage) },
+                    onCollectionClick = { backstack.add(Screen.Collection) },
+                    onHomeClick = { backstack.add(Screen.Home) }
                 )
             }
-            entry<Screen.ScanQR>{
+            entry<Screen.ScanQR> {
                 ScanQrScreen(
-                    onEditClick =  {backstack.add(Screen.CharmEdit)},
-                    onCollectionClick = {backstack.add(Screen.Collection)},
-                    onHomeClick = {backstack.add(Screen.Home)}
+                    onEditClick = { backstack.add(Screen.SearchImage) },
+                    onCollectionClick = { backstack.add(Screen.Collection) },
+                    onHomeClick = { backstack.add(Screen.Home) }
+                )
+            }
+            entry<Screen.SearchImage> {
+                SearchImageScreen(
+                    onHomeClick = { backstack.add(Screen.Home) },
+                    onImageClick = { backstack.add(Screen.CharmEdit) }
                 )
             }
         }
