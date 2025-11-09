@@ -2,20 +2,17 @@ package com.sapienza.reverie.presentation.ui.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.carousel.CarouselDefaults
-import androidx.compose.material3.carousel.HorizontalMultiBrowseCarousel
 import androidx.compose.material3.carousel.HorizontalUncontainedCarousel
 import androidx.compose.material3.carousel.rememberCarouselState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.sapienza.reverie.R
 
@@ -47,7 +44,7 @@ fun CharmCarousel(modifier: Modifier =  Modifier.fillMaxWidth()) {
         // 5. This is the content for each item.
         //    Here we place our 'Charm' composable.
         val imageId = charmImageIds[index]
-        Charm(imageUrl = imageId)
+        Charm(imageUrl = imageId,)
     }
 }
 

@@ -2,7 +2,6 @@ package com.sapienza.reverie.presentation.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 
 import androidx.navigation3.runtime.entryProvider
@@ -15,7 +14,6 @@ import com.sapienza.reverie.presentation.ui.screen.CollectionScreen
 import com.sapienza.reverie.presentation.ui.screen.DashboardScreen
 import com.sapienza.reverie.presentation.ui.screen.LoginScreen
 import com.sapienza.reverie.presentation.ui.screen.ScanQrScreen
-import java.util.Map.entry
 
 
 @Composable
@@ -28,22 +26,44 @@ fun AppNavigation(){
 
         entryProvider = entryProvider {
             entry<Screen.Login>{
-                LoginScreen(onLoginClick = {backstack.add(Screen.Dashboard)})
+                LoginScreen(onLoginClick = {backstack.add(Screen.Home)})
             }
-            entry<Screen.Dashboard>{
-                DashboardScreen()
+            entry<Screen.Home>{
+                DashboardScreen(
+                    onScanClick = {backstack.add(Screen.ScanQR)},
+                    onEditClick = {backstack.add(Screen.CharmEdit) },
+                    onHomeClick = {backstack.add(Screen.Home)},
+                    onCollectionClick = {backstack.add(Screen.Collection)}
+
+                )
             }
             entry<Screen.CharmEdit>{
-                CharmEditScreen()
-            }
-            entry<Screen.Charm>{
-                CharmScreen()
+                CharmEditScreen(
+                    onCancelClick = {backstack.add(Screen.Home)}
+                )
             }
             entry<Screen.Collection>{
-                CollectionScreen()
+                CollectionScreen(
+                    onCharmClick = { charmModel -> backstack.add(Screen.Charm(charmModel)) },
+                    onEditClick = {backstack.add(Screen.CharmEdit) },
+                    onHomeClick = {backstack.add(Screen.Home)},
+                    onCollectionClick = {backstack.add(Screen.Collection)},
+                )
+            }
+            entry<Screen.Charm>{ screen ->
+                CharmScreen(
+                    charmModel = screen.charmModel,
+                    onEditClick =  {backstack.add(Screen.CharmEdit)},
+                    onCollectionClick = {backstack.add(Screen.Collection)},
+                    onHomeClick = {backstack.add(Screen.Home)}
+                )
             }
             entry<Screen.ScanQR>{
-                ScanQrScreen()
+                ScanQrScreen(
+                    onEditClick =  {backstack.add(Screen.CharmEdit)},
+                    onCollectionClick = {backstack.add(Screen.Collection)},
+                    onHomeClick = {backstack.add(Screen.Home)}
+                )
             }
         }
     )

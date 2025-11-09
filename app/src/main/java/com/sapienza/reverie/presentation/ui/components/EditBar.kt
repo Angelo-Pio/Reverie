@@ -20,7 +20,7 @@ import com.sapienza.reverie.ui.theme.NavBarColor
 
 
 @Composable
-fun EditBar() {
+fun EditBar(onCancelClick: () -> Unit = {}) {
     NavigationBar (
         modifier = Modifier.background(
             brush = Brush.horizontalGradient(
@@ -60,7 +60,7 @@ fun EditBar() {
             icon = { Icon(Icons.Filled.Cancel, contentDescription = null) },
             label = { Text("Cancel") },
             selected = false,
-            onClick = { /*TODO*/ }
+            onClick = onCancelClick
         )
 
     }

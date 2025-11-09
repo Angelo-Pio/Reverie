@@ -20,13 +20,16 @@ import com.sapienza.reverie.presentation.ui.components.TopBar
 import com.sapienza.reverie.ui.theme.ReverieTheme
 
 @Composable
-fun CharmEditScreen() {
-    Scaffold(bottomBar = { EditBar() }, topBar = { TopBar(title = "Build your Charm", icon = Icons.Filled.ModeEdit) }){
+fun CharmEditScreen(onCancelClick: () -> Unit = {}) {
+    Scaffold(bottomBar = { EditBar(onCancelClick = onCancelClick) }, topBar = { TopBar(title = "Build your Charm", icon = Icons.Filled.ModeEdit) }){
         innerPadding->
 
         Box(modifier = Modifier.padding(innerPadding), contentAlignment = Alignment.BottomEnd){
 
-            Charm(modifier = Modifier.padding(15.dp).fillMaxSize().aspectRatio(2f/3f), imageUrl = R.drawable.saint_franca)
+            Charm(
+                modifier = Modifier.padding(15.dp).fillMaxSize().aspectRatio(2f/3f),
+                imageUrl = R.drawable.saint_franca,
+            )
             SaveButton(modifier = Modifier.padding(bottom = 10.dp, end = 10.dp))
         }
 

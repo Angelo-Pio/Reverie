@@ -33,16 +33,26 @@ import com.sapienza.reverie.ui.theme.ReverieTheme
 
 
 @Composable
-fun DashboardScreen() {
+fun DashboardScreen(
+    onScanClick: () -> Unit = {},
+    onEditClick: () -> Unit = {},
+    onHomeClick: () -> Unit = {},
+    onCollectionClick: () -> Unit = {}
+) {
 
-    val fooSaints = listOf(R.drawable.saint_rick, R.drawable.saint_vale, R.drawable.saint_fede, R.drawable.saint_franca, R.drawable.saint_miriam)
+    val fooSaints = listOf(
+        R.drawable.saint_rick,
+        R.drawable.saint_vale,
+        R.drawable.saint_fede,
+        R.drawable.saint_franca,
+        R.drawable.saint_miriam
+    )
 
     Scaffold(
-        bottomBar = { NavBar() },
-        floatingActionButton = { ScanButton(onClick = {}) },
+        bottomBar = { NavBar(onHomeClick, onCollectionClick, onEditClick) },
+        floatingActionButton = { ScanButton(onClick = onScanClick) },
         floatingActionButtonPosition = FabPosition.End,
-        topBar = { TopBar(icon = Icons.Filled.Dashboard, title = "Dashboard") }
-    ) { innerPadding ->
+        topBar = { TopBar(icon = Icons.Filled.Dashboard, title = "Home Dashboard") }) { innerPadding ->
         // DO NOT change innerPadding.
         // APPLY innerPadding to the root layout of your content.
         Column(
@@ -54,11 +64,14 @@ fun DashboardScreen() {
         ) {
 
             Spacer(modifier = Modifier.height(50.dp))
-            CharmCarousel(Modifier.padding(horizontal = 15.dp) )
-            HorizontalDivider(color = Color.LightGray, thickness = 2.dp, modifier = Modifier.padding(horizontal = 15.dp, vertical = 20.dp))
+            CharmCarousel(Modifier.padding(horizontal = 15.dp))
+            HorizontalDivider(
+                color = Color.LightGray,
+                thickness = 2.dp,
+                modifier = Modifier.padding(horizontal = 15.dp, vertical = 20.dp)
+            )
 
             CommentList(fooSaints)
-
 
 
         }
@@ -70,6 +83,6 @@ fun DashboardScreen() {
 fun DashboardScreenPreview() {
     ReverieTheme {
 
-    DashboardScreen()
+        DashboardScreen()
     }
 }

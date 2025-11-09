@@ -35,31 +35,56 @@ import com.sapienza.reverie.ui.theme.ReverieTheme
 
 
 @Composable
-fun ScanQrScreen(modifier: Modifier = Modifier){
+fun ScanQrScreen(
+    modifier: Modifier = Modifier,
+    onCollectionClick: () -> Unit = {},
+    onHomeClick: () -> Unit = {},
+    onEditClick: () -> Unit = {}
+) {
     val hasCameraPermission = remember { mutableStateOf(false) }
 
 
 
-    Scaffold(bottomBar = { NavBar() }, topBar = { TopBar(title = "Scan the QR Code", icon = Icons.Filled.QrCodeScanner) }){
-        innerPadding->
+    Scaffold(bottomBar = {
+        NavBar(
+            onCollectionClick = onCollectionClick,
+            onHomeClick = onHomeClick,
+            onEditClick = onEditClick
+        )
+    }, topBar = {
+        TopBar(
+            title = "Scan the QR Code", icon = Icons.Filled.QrCodeScanner
+        )
+    }) { innerPadding ->
         Column(
             modifier = modifier.padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
             Spacer(modifier = Modifier.height(32.dp))
-            Text(text = "Scan a reverie code to get a new charm!", fontSize = 24.sp, fontFamily = ReverieFontFamily("Bold"), modifier = modifier.padding(horizontal = 24.dp), textAlign = TextAlign.Center)
+            Text(
+                text = "Scan this reverie code to get a new charm!",
+                fontSize = 24.sp,
+                fontFamily = ReverieFontFamily("Bold"),
+                modifier = modifier.padding(horizontal = 24.dp),
+                textAlign = TextAlign.Center
+            )
             Spacer(modifier = Modifier.height(32.dp))
 
             Surface(
-                modifier = Modifier.fillMaxSize().aspectRatio(1f/1f).padding(24.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .aspectRatio(1f / 1f)
+                    .padding(24.dp),
                 shape = RoundedCornerShape(16.dp),
                 color = MaterialTheme.colorScheme.primary
             ) {
                 Icon(
                     imageVector = Icons.Filled.QrCodeScanner,
                     contentDescription = null,
-                    modifier = Modifier.fillMaxSize().padding(8.dp)
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(8.dp)
                 )
             }
 
@@ -69,7 +94,7 @@ fun ScanQrScreen(modifier: Modifier = Modifier){
 
 @Preview
 @Composable
-fun ScanQrCode(){
+fun ScanQrCode() {
     ReverieTheme {
         ScanQrScreen()
     }

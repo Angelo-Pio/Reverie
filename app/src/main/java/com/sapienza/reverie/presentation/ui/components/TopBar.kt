@@ -13,6 +13,7 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
@@ -30,7 +31,7 @@ import com.sapienza.reverie.ui.theme.ReverieTheme
 
 @Composable
 fun TopBar(
-    icon: ImageVector = Icons.Filled.Dashboard,
+    icon: ImageVector? = null,
     title: String = "Reverie",
     modifier: Modifier = Modifier
         .clip(RoundedCornerShape(24.dp))
@@ -39,7 +40,7 @@ fun TopBar(
 ) {
 
     NavigationBar(
-        modifier.background(
+        modifier = modifier.background(
             brush = Brush.linearGradient(
                 colors = TopBarColor,
                 // You can adjust startY and endY for where the gradient starts and ends
@@ -49,9 +50,11 @@ fun TopBar(
         NavigationBarItem(selected = false, onClick = { /*TODO*/ }, icon = { }, label = {
 
             val size = 30.dp
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
 
-                Icon(imageVector = icon, contentDescription = null, Modifier.size(size))
+                if (icon != null) Icon(
+                    imageVector = icon, contentDescription = null, Modifier.size(size)
+                )
                 Text(
                     text = title,
                     fontFamily = ReverieFontFamily("Bold"),

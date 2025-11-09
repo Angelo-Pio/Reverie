@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.sapienza.reverie.R
+import com.sapienza.reverie.domain.model.CharmModel
 import com.sapienza.reverie.presentation.ui.components.ButtonType
 import com.sapienza.reverie.presentation.ui.components.Charm
 import com.sapienza.reverie.presentation.ui.components.CommentList
@@ -29,13 +30,23 @@ import com.sapienza.reverie.ui.theme.ReverieTheme
 
 
 @Composable
-fun CharmScreen(modifier: Modifier = Modifier){
+fun CharmScreen(
+    modifier: Modifier = Modifier,
+    charmModel: CharmModel = CharmModel(
+        id = 1,
+        imageUrl = R.drawable.saint_rick,
+        name = "Saint Rick"
+    ),
+    onCollectionClick: () -> Unit = {},
+    onHomeClick: () -> Unit = {},
+    onEditClick: () -> Unit = {}
+){
 
     val saints = listOf(R.drawable.saint_franca,R.drawable.saint_miriam)
 
     Scaffold(
-        topBar = { TopBar(icon = Icons.Filled.SaveAs, title = "Charm Details") },
-        bottomBar = { NavBar() },
+        topBar = { TopBar( title = charmModel.name) },
+        bottomBar = { NavBar(onCollectionClick = onCollectionClick, onHomeClick = onHomeClick, onEditClick = onEditClick) },
         floatingActionButton = { },
         floatingActionButtonPosition = FabPosition.End
 
@@ -44,7 +55,7 @@ fun CharmScreen(modifier: Modifier = Modifier){
         Column(modifier =modifier.padding(innerPadding), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally){
 
             Box(modifier = Modifier.padding(12.dp).weight(2f).aspectRatio(2f/3f), contentAlignment = Alignment.TopEnd){
-                Charm(imageUrl = R.drawable.saint_franca, modifier = Modifier.padding(15.dp))
+                Charm(modifier = Modifier.padding(15.dp), imageUrl = charmModel.imageUrl,)
                 ShareButton(type = ButtonType.SHARE, modifier = Modifier.size(45.dp), onClick = {
                     /*TODO animation for buttons*/
                 })

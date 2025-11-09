@@ -25,9 +25,11 @@ import com.sapienza.reverie.ui.theme.NavBarColor
 import com.sapienza.reverie.ui.theme.ReverieTheme
 
 
-
 @Composable
 fun NavBar(
+    onHomeClick: () -> Unit = {},
+    onCollectionClick: () -> Unit = {},
+    onEditClick: () -> Unit = {},
     modifier: Modifier = Modifier
         .clip(RoundedCornerShape(24.dp))
         .padding(6.dp)
@@ -39,32 +41,34 @@ fun NavBar(
                 colors = NavBarColor,
                 // You can adjust startY and endY for where the gradient starts and ends
             )
-        ),
-        containerColor = Color.Transparent
+        ), containerColor = Color.Transparent
     ) {
 
+        //HOME
         NavigationBarItem(
             icon = { Icon(Icons.Filled.Home, contentDescription = null) },
             label = { Text("Home") },
             selected = false,
-            onClick = { /*TODO*/ },
+            onClick = onHomeClick,
             colors = NavigationBarItemDefaults.colors(
 
             )
 
 
         )
+        //EDIT IMAGE
         NavigationBarItem(
             icon = { Icon(Icons.Filled.Create, contentDescription = null) },
             label = { Text("Create") },
             selected = false,
-            onClick = { /*TODO*/ }
+            onClick = onEditClick
         )
+        //COLLECTION
         NavigationBarItem(
             icon = { Icon(Icons.Filled.Collections, contentDescription = null) },
             label = { Text("Collection") },
             selected = false,
-            onClick = { /*TODO*/ }
+            onClick = onCollectionClick
         )
 
     }
