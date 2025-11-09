@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  db:
+    container_name: reverie-database
+    image: postgres:17
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PW}
+      - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    restart: always
+
+  back-end:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: reverie-back_end
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/${POSTGRES_DB}
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PW}
+    ports:
+      - "6001:8080"
+    restart: always
+    depends_on:
+      - db
+
+volumes:
+  db_data:

@@ -1,0 +1,13 @@
+FROM eclipse-temurin:21-jdk
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy the built jar into the container
+COPY reverie.jar app.jar
+
+# Expose the port your Spring Boot app runs on
+EXPOSE 8080
+
+# Run the Spring Boot app
+ENTRYPOINT ["java","-jar","app.jar"]
