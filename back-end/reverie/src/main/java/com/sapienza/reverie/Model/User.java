@@ -1,6 +1,7 @@
 package com.sapienza.reverie.Model;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -38,6 +39,11 @@ public class User {
         inverseJoinColumns = @JoinColumn(name = "charm_id")
 )
     private List<Charm> collected_charms;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Comment> comments;
+
 
 
 
