@@ -7,6 +7,7 @@ import com.sapienza.reverie.Repository.CharmRepository;
 import com.sapienza.reverie.Repository.CommentRepository;
 import com.sapienza.reverie.Repository.UserRepository;
 import com.sapienza.reverie.Service.FileStorageService;
+import com.sapienza.reverie.Service.Mapper;
 import com.sapienza.reverie.dto.CharmDto;
 import com.sapienza.reverie.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,6 +37,9 @@ public class ReverieController {
 
     @Autowired
     FileStorageService fileStorageService;
+
+
+
 
     /*TODO
         * authentication (sign up page + google sign in)
@@ -79,14 +84,26 @@ public class ReverieController {
     }
 
     @GetMapping("/charm/comment/recent")
-    public ResponseEntity<?> getMostRecentComments(@RequestParam Long charm_id) {
-        Optional<Charm> charmOptional = charmRepository.findById(charm_id);
-        if (charmOptional.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        List<Charm> mostRecentCommentedCharms = charmRepository.findMostRecentCommentedCharms(LocalDateTime.now());
+    public ResponseEntity<?> getMostRecentlyCommentedCharms(@RequestParam Long charm_id) {
+        List<Charm> charms = commentRepository.findMostRecentlyCommentedCharms(LocalDateTime.now());
+        return new ResponseEntity<>(charms, HttpStatus.OK);
 
-        return new ResponseEntity<>(mostRecentCommentedCharms, HttpStatus.OK);
+    }
+
+    @GetMapping("/charm/random")
+    public ResponseEntity<?> getDashboardCharms(@RequestParam Long user_id) {
+        Optional<User> user = userRepository.findById(user_id);
+        if (user.isEmpty()) {
+            return ResponseEntity.badRequest().body("User not found");
+        }
+        List<Charm> collectedCharms = user.get().getCollected_charms();
+         Collections.shuffle(collectedCharms);
+
+        List<Charm> random10 = collectedCharms.stream()
+            .limit(10)
+            .toList();
+
+        return new ResponseEntity<>(Mapper.toCharmDtoList(random10), HttpStatus.OK);
     }
 
 
@@ -144,7 +161,7 @@ public class ReverieController {
     }
 
     @PostMapping("/charms/collect")
-    public ResponseEntity<?> addCharmToUserCollection(@RequestBody CharmDto charmDto, @RequestParam Long user_id) {
+    public ResponseEntity<?> addCharmToUserCollection(@RequestBody Long charm_id, @RequestParam Long user_id) {
         Optional<User> user = userRepository.findById(user_id);
 
         if (user.isEmpty()) {
@@ -154,14 +171,19 @@ public class ReverieController {
                     .body("User with id " + user_id + " not found");
         }
 
-        Optional<Charm> charm = charmRepository.findById(charmDto.getId());
+        Optional<Charm> charm = charmRepository.findById(charm_id);
         if(charm.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Charm with id " + charmDto.getId() + " not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Charm with id " + charm_id + " not found");
         }
 
         if (charm.get().getCollectors().contains(user.get())){
             return ResponseEntity.badRequest().body("Charm already collected");
         }
+
+        if(user.get().getCreated_charms().contains(charm.get())){
+            return ResponseEntity.badRequest().body("You cannot collect a charm you created");
+        }
+
         charm.get().getCollectors().add(user.get());
         Charm savedCharm = charmRepository.save(charm.get());
 

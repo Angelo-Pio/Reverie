@@ -1,0 +1,51 @@
+package com.sapienza.reverie.Service;
+
+import com.sapienza.reverie.Model.Charm;
+import com.sapienza.reverie.Model.Comment;
+import com.sapienza.reverie.dto.CharmDto;
+import com.sapienza.reverie.dto.CommentDto;
+import lombok.Data;
+import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Component
+@Data
+public class Mapper {
+
+    public static CommentDto toCommentDto(Comment comment) {
+        CommentDto commentDto = new CommentDto();
+        commentDto.setId(comment.getId());
+        commentDto.setText(comment.getText());
+        commentDto.setId(comment.getId());
+        return commentDto;
+    }
+
+    public static List<CommentDto> toCommentDtoList(List<Comment> comments) {
+        List<CommentDto> commentDtoList = new ArrayList<>();
+        for (Comment comment : comments) {
+            commentDtoList.add(toCommentDto(comment));
+        }
+        return commentDtoList;
+
+    }
+
+    public static CharmDto toCharmDto(Charm charm) {
+        CharmDto charmDto = new CharmDto();
+        charmDto.setId(charm.getId());
+        charmDto.setComments(toCommentDtoList(charm.getComments()));
+        charmDto.setPictureUrl(charm.getPictureUrl());
+        charmDto.setDescription(charm.getDescription());
+        charmDto.setCreated_at(charm.getCreated_at());
+        return charmDto;
+    }
+
+    public static List<CharmDto> toCharmDtoList(List<Charm> charms) {
+        List<CharmDto> charmDtoList = new ArrayList<>();
+        for (Charm charm : charms) {
+            charmDtoList.add(toCharmDto(charm));
+        }
+        return charmDtoList;
+    }
+}

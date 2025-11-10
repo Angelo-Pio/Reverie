@@ -1,5 +1,6 @@
 package com.sapienza.reverie.dto;
 
+import com.sapienza.reverie.Model.Comment;
 import com.sapienza.reverie.Model.User;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -17,6 +18,8 @@ public class CharmDto {
     private String pictureUrl;
 
     private LocalDateTime created_at;
+
+    private List<CommentDto> comments;
 
     //private User creator;
 

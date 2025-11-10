@@ -13,5 +13,13 @@ import java.util.List;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
+    @Query("""
+        SELECT c.charm
+        FROM Comment c
+        WHERE c.created_at <= :timestamp
+        GROUP BY c.charm
+        ORDER BY MAX(c.created_at) DESC
+    """)
+    List<Charm> findMostRecentlyCommentedCharms(@Param("timestamp") LocalDateTime timestamp);
 
 }
