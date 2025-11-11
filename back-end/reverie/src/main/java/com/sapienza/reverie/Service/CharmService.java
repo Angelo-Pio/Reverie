@@ -49,8 +49,8 @@ public class CharmService {
         comment.setUser(user.get());
         comment.setCreated_at(LocalDateTime.now());
 
-        user.get().getComments().add(comment);
-        charmOptional.get().getComments().add(comment);
+        //user.get().getComments().add(comment);
+        //charmOptional.get().getComments().add(comment);
 
         charmRepository.save(charmOptional.get());
         userRepository.save(user.get());

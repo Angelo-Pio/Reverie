@@ -41,6 +41,7 @@ public class Mapper {
         commentDto.setId(comment.getId());
         commentDto.setText(comment.getText());
         commentDto.setId(comment.getId());
+        commentDto.setCreated_at(comment.getCreated_at());
         return commentDto;
     }
 

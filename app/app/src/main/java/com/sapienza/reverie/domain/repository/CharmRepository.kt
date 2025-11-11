@@ -21,7 +21,7 @@ interface CharmRepository {
     @GET("charm/comment")
     suspend  fun getCharmComments(@Query("charm_id") id: Long): List<UserCommentModel>
 
-    @GET("/charm/comment/recent")
+    @GET("charm/comment/recent")
     suspend fun getMostRecentComments(@Query("user_id" )userId: Long): List<CharmWithUserModel>
 
 

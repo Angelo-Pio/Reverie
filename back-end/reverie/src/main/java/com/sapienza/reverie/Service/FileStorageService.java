@@ -30,18 +30,20 @@ public class FileStorageService {
             if (file.isEmpty()) {
                 throw new RuntimeException("Failed to store empty file.");
             }
-            // Generate a unique filename to prevent conflicts
-            String uniqueFilename = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+            String originalFilename = file.getOriginalFilename();
+            String uniqueFilename = UUID.randomUUID().toString() + originalFilename.substring(originalFilename.lastIndexOf("."));
+
 
             // Copy the file to the target location (e.g., uploads/unique_filename.jpg)
             Files.copy(file.getInputStream(), this.rootLocation.resolve(uniqueFilename));
 
             // Generate the file's public URL
             // e.g., http://your-server-address.com/files/unique_filename.jpg
-            return ServletUriComponentsBuilder.fromCurrentContextPath()
+            /*return ServletUriComponentsBuilder.fromCurrentContextPath()
                     .path("/files/") // This path must be configured to serve static files
                     .path(uniqueFilename)
-                    .toUriString();
+                    .toUriString();*/
+            return uniqueFilename;
 
         } catch (Exception e) {
             throw new RuntimeException("Failed to store file.", e);

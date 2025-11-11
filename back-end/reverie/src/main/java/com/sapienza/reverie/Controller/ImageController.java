@@ -13,12 +13,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @RestController
-@RequestMapping("/api/images")
+@RequestMapping("reverie/api/images")
 public class ImageController {
 
     private final Path root = Paths.get("uploads");
 
-    @GetMapping("")
+    @GetMapping()
     public ResponseEntity<Resource> getImage(@RequestParam String filename) {
         try {
             Path file = root.resolve(filename);

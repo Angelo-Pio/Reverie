@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserCommentDto {
 
-    CommentDto commentDto;
-    UserDto userDto;
+    private CommentDto commentDto;
+    private UserDto userDto;
 }
