@@ -12,4 +12,7 @@ interface CharmRepository {
     @GET("charm/{id}")
     suspend fun getCharmById(@Path("id") id: Long): CharmModel
 
+    @GET("charm/random")
+    suspend fun getCarouselCharms(@Query("user_id") id: Long): List<CharmModel>
+
 }

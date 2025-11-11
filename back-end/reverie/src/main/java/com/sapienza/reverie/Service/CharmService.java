@@ -1,0 +1,204 @@
+package com.sapienza.reverie.Service;
+
+import com.sapienza.reverie.Model.Charm;
+import com.sapienza.reverie.Model.Comment;
+import com.sapienza.reverie.Model.User;
+import com.sapienza.reverie.Repository.CharmRepository;
+import com.sapienza.reverie.Repository.CommentRepository;
+import com.sapienza.reverie.Repository.UserRepository;
+import com.sapienza.reverie.dto.CharmDto;
+import com.sapienza.reverie.dto.UserDto;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class CharmService {
+
+    @Autowired
+    private CharmRepository charmRepository;
+    @Autowired
+    private CommentRepository commentRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private FileStorageService fileStorageService;
+
+
+    public ResponseEntity<?> addComment(Long charm_id, String comment_content, Long user_id) {
+
+        Optional<Charm> charmOptional = charmRepository.findById(charm_id);
+        Optional<User> user = userRepository.findById(user_id);
+
+        if (charmOptional.isEmpty() || user.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        Comment comment = new Comment();
+        comment.setCharm(charmOptional.get());
+        comment.setText(comment_content);
+        comment.setUser(user.get());
+        comment.setCreated_at(LocalDateTime.now());
+
+        user.get().getComments().add(comment);
+        charmOptional.get().getComments().add(comment);
+
+        charmRepository.save(charmOptional.get());
+        userRepository.save(user.get());
+        commentRepository.save(comment);
+        return new ResponseEntity<>(HttpStatus.OK);
+
+    }
+
+    public ResponseEntity<?> getComments(Long charm_id) {
+        Optional<Charm> charmOptional = charmRepository.findById(charm_id);
+        if (charmOptional.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        List<Comment> comments = charmOptional.get().getComments();
+        return new ResponseEntity<>(comments, HttpStatus.OK);
+    }
+
+    public ResponseEntity<?> getMostRecentlyCommentedCharms() {
+        List<Charm> charms = commentRepository.findMostRecentlyCommentedCharms(LocalDateTime.now());
+        return new ResponseEntity<>(charms, HttpStatus.OK);
+    }
+
+    public ResponseEntity<?> getDashboardCharms(Long user_id) {
+        Optional<User> user = userRepository.findById(user_id);
+        if (user.isEmpty()) {
+            return ResponseEntity.badRequest().body("User not found");
+        }
+        List<Charm> collectedCharms = user.get().getCollected_charms();
+         Collections.shuffle(collectedCharms);
+
+        List<Charm> random10 = collectedCharms.stream()
+            .limit(10)
+            .toList();
+
+        return new ResponseEntity<>(Mapper.toCharmDtoList(random10), HttpStatus.OK);
+    }
+
+    public ResponseEntity<?> getAllCharmsCreated(Long user_id) {
+        Optional<List<Charm>> charms = userRepository.findAllCreated(user_id);
+        if (charms.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(charms);
+    }
+
+    public ResponseEntity<?> getAllCharmsCollected( Long user_id) {
+        Optional<List<Charm>> charms = userRepository.findAllCollected(user_id);
+        if (charms.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(charms);
+    }
+
+    public ResponseEntity<?> getCharmById( Long charm_id) {
+        Optional<Charm> charmOptional = charmRepository.findById(charm_id);
+        if (charmOptional.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(charmOptional.get(), HttpStatus.OK);
+    }
+
+
+    public ResponseEntity<?> createCharm(@ModelAttribute CharmDto charmDto, Long user_id,  MultipartFile file) {
+        Optional<User> user = userRepository.findById(user_id);
+
+        if (user.isEmpty()) {
+            // Return 404 if user not found
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("User with id " + user_id + " not found");
+        }
+        String imageUrl = fileStorageService.storeAndGetUrl(file);
+
+        Charm charm = new Charm();
+        charm.setDescription(charmDto.getDescription());
+        charm.setCreated_at(LocalDateTime.now());
+        charm.setCreator(user.get());
+        charm.setPictureUrl(imageUrl);
+        Charm savedCharm = charmRepository.save(charm);
+
+        return ResponseEntity
+                .ok()
+                .body(savedCharm);
+    }
+
+    public ResponseEntity<?> addCharmToUserCollection( Long charm_id,  Long user_id) {
+        Optional<User> user = userRepository.findById(user_id);
+
+        if (user.isEmpty()) {
+            // Return 404 if user not found
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("User with id " + user_id + " not found");
+        }
+
+        Optional<Charm> charm = charmRepository.findById(charm_id);
+        if(charm.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Charm with id " + charm_id + " not found");
+        }
+
+        if (charm.get().getCollectors().contains(user.get())){
+            return ResponseEntity.badRequest().body("Charm already collected");
+        }
+
+        if(user.get().getCreated_charms().contains(charm.get())){
+            return ResponseEntity.badRequest().body("You cannot collect a charm you created");
+        }
+
+        charm.get().getCollectors().add(user.get());
+        Charm savedCharm = charmRepository.save(charm.get());
+
+        return ResponseEntity
+                .ok()
+                .body(savedCharm);
+    }
+
+    public ResponseEntity<?> getUserProfilePicture( Long user_id) {
+        Optional<User> user = userRepository.findById(user_id);
+        if (user.isEmpty()) {
+            return ResponseEntity.badRequest().body("User with id " + user_id + " not found");
+        }
+        return ResponseEntity.ok(user.get().getProfilePictureUrl());
+    }
+
+    public ResponseEntity<?> getCharmImage( Long charm_id) {
+        Optional<Charm> charmOptional = charmRepository.findById(charm_id);
+        if (charmOptional.isEmpty()) {
+            return ResponseEntity.badRequest().body("Charm with id " + charm_id + " not found");
+        }
+        return ResponseEntity.ok(charmOptional.get().getPictureUrl());
+    }
+
+
+    public ResponseEntity<?> createUser(@ModelAttribute UserDto userDto, MultipartFile file) {
+
+        Optional<User> userOptional = userRepository.findByEmail(userDto.getEmail());
+        if (userOptional.isPresent()){
+            return ResponseEntity.badRequest().body("User with email " + userDto.getEmail() + " already exists");
+        }
+
+        User user = new User();
+        user.setUsername(userDto.getUsername());
+        user.setEmail(userDto.getEmail());
+        user.setPassword(userDto.getPassword());
+        user.setProfilePictureUrl(fileStorageService.storeAndGetUrl(file));
+        userRepository.save(user);
+
+        return ResponseEntity.ok().build();
+    }
+}
