@@ -2,8 +2,11 @@ package com.sapienza.reverie.Service;
 
 import com.sapienza.reverie.Model.Charm;
 import com.sapienza.reverie.Model.Comment;
+import com.sapienza.reverie.Model.User;
 import com.sapienza.reverie.dto.CharmDto;
+import com.sapienza.reverie.dto.CharmWithUserDto;
 import com.sapienza.reverie.dto.CommentDto;
+import com.sapienza.reverie.dto.UserDto;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +16,25 @@ import java.util.List;
 @Component
 @Data
 public class Mapper {
+
+    public static CharmWithUserDto toCharmWithUserDto(Charm charm, User user,Comment comment) {
+
+        CharmWithUserDto charmWithUserDto = new CharmWithUserDto();
+        charmWithUserDto.setCharm(toCharmDto(charm));
+        charmWithUserDto.setUser(toUserDto(user));
+        charmWithUserDto.setComment(toCommentDto(comment));
+        return charmWithUserDto;
+    }
+
+    public static UserDto toUserDto(User user) {
+        UserDto userDto = new UserDto();
+        userDto.setId(user.getId());
+        userDto.setUsername(user.getUsername());
+        userDto.setEmail(user.getEmail());
+        userDto.setPassword(user.getPassword());
+        userDto.setProfilePictureUrl(user.getProfilePictureUrl());
+        return userDto;
+    }
 
     public static CommentDto toCommentDto(Comment comment) {
         CommentDto commentDto = new CommentDto();

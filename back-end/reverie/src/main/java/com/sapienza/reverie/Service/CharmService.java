@@ -6,20 +6,16 @@ import com.sapienza.reverie.Model.User;
 import com.sapienza.reverie.Repository.CharmRepository;
 import com.sapienza.reverie.Repository.CommentRepository;
 import com.sapienza.reverie.Repository.UserRepository;
-import com.sapienza.reverie.dto.CharmDto;
-import com.sapienza.reverie.dto.UserDto;
+import com.sapienza.reverie.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class CharmService {
@@ -34,6 +30,9 @@ public class CharmService {
 
     @Autowired
     private FileStorageService fileStorageService;
+
+
+
 
 
     public ResponseEntity<?> addComment(Long charm_id, String comment_content, Long user_id) {
@@ -61,17 +60,33 @@ public class CharmService {
     }
 
     public ResponseEntity<?> getComments(Long charm_id) {
-        Optional<Charm> charmOptional = charmRepository.findById(charm_id);
-        if (charmOptional.isEmpty()) {
+        Optional<Charm> charms = charmRepository.findById(charm_id);
+        if (charms.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        List<Comment> comments = charmOptional.get().getComments();
-        return new ResponseEntity<>(comments, HttpStatus.OK);
+        List<UserCommentDto> ret = new LinkedList<>();
+        for (Comment comment: charms.get().getComments()) {
+            User user = comment.getUser();
+            UserCommentDto userCommentDto = new UserCommentDto();
+            userCommentDto.setCommentDto(Mapper.toCommentDto(comment));
+            userCommentDto.setUserDto(Mapper.toUserDto(user));
+            ret.add(userCommentDto);
+        }
+
+        return new ResponseEntity<>(ret, HttpStatus.OK);
     }
 
-    public ResponseEntity<?> getMostRecentlyCommentedCharms() {
-        List<Charm> charms = commentRepository.findMostRecentlyCommentedCharms(LocalDateTime.now());
-        return new ResponseEntity<>(charms, HttpStatus.OK);
+    public ResponseEntity<?> getMostRecentlyCommentedCharms(Long user_id) {
+        List<Charm> charms = commentRepository.findMostRecentlyCommentedCharms(LocalDateTime.now(), user_id);
+        List<CharmWithUserDto> ret_charms = new LinkedList<>();
+        for (Charm charm : charms) {
+            
+            Comment comment = charm.getComments().getFirst();
+            User user = charm.getComments().getFirst().getUser();
+            ret_charms.add(Mapper.toCharmWithUserDto(charm,user,comment));
+        }
+
+        return new ResponseEntity<>(ret_charms, HttpStatus.OK);
     }
 
     public ResponseEntity<?> getDashboardCharms(Long user_id) {

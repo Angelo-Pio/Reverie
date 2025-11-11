@@ -51,10 +51,10 @@ public class ReverieController {
         return charmService.getComments(charm_id);
     }
 
+    //TODO on those ones I own !
     @GetMapping("/charm/comment/recent")
-    public ResponseEntity<?> getMostRecentlyCommentedCharms() {
-        return charmService.getMostRecentlyCommentedCharms();
-
+    public ResponseEntity<?> getMostRecentlyCommentedCharms(@RequestParam Long user_id) {
+        return charmService.getMostRecentlyCommentedCharms(user_id);
 
     }
 
