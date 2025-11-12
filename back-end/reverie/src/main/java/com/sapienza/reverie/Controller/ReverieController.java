@@ -75,6 +75,11 @@ public class ReverieController {
         return charmService.getAllCharmsCollected(user_id);
     }
 
+    @GetMapping("/charm/all")
+    public ResponseEntity<?> getAllCharms(@RequestParam Long user_id) {
+        return charmService.getAllCharms(user_id);
+    }
+
     @GetMapping("/charm")
     public ResponseEntity<?> getCharmById(@RequestParam Long charm_id) {
         return charmService.getCharmById(charm_id);
@@ -87,7 +92,7 @@ public class ReverieController {
     }
 
     @PostMapping("/charms/collect")
-    public ResponseEntity<?> addCharmToUserCollection(@RequestBody Long charm_id, @RequestParam Long user_id) {
+    public ResponseEntity<?> addCharmToUserCollection(@RequestParam Long charm_id, @RequestParam Long user_id) {
        return charmService.addCharmToUserCollection(charm_id,user_id);
     }
 

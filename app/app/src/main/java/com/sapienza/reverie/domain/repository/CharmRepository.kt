@@ -5,12 +5,16 @@ import com.sapienza.reverie.domain.model.CharmWithUserModel
 import com.sapienza.reverie.domain.model.CommentModel
 import com.sapienza.reverie.domain.model.UserCommentModel
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface CharmRepository {
     @GET("charm/created")
     suspend fun getCreatedCharms(@Query("user_id")userId : Long): List<CharmModel>
+
+    @GET("charm/all")
+    suspend fun getAllCharms(@Query("user_id")userId : Long): List<CharmModel>
 
     @GET("charm/{id}")
     suspend fun getCharmById(@Path("id") id: Long): CharmModel
@@ -24,5 +28,10 @@ interface CharmRepository {
     @GET("charm/comment/recent")
     suspend fun getMostRecentComments(@Query("user_id" )userId: Long): List<CharmWithUserModel>
 
+    @POST("charm/comment")
+    suspend fun postComment(@Query("user_id")userId: Long, @Query("charm_id") charmId: Long,@Query("comment_content") text: String)
+
+    @POST("charms/collect")
+    suspend fun addToCollection(@Query("user_id")userId: Long, @Query("charm_id") charmId: Long)
 
 }

@@ -26,7 +26,7 @@ class CharmViewModel() : ViewModel() {
     fun loadCharms(userId : Long) {
         viewModelScope.launch {
             try {
-                val result = ApiClient.service.getCreatedCharms(userId = userId)
+                val result = ApiClient.service.getAllCharms(userId = userId)
                 _charms.value = result
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -61,6 +61,27 @@ class CharmViewModel() : ViewModel() {
             try {
                 val result = ApiClient.service.getMostRecentComments(userId)
                 _recentComments.value = result
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    fun postComment(userId : Long, charmId : Long, text : String){
+        viewModelScope.launch {
+            try {
+                val result = ApiClient.service.postComment(userId, charmId, text)
+                getComments(charmId)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    fun collectCharm(userId : Long, charmId : Long){
+        viewModelScope.launch {
+            try {
+                val result = ApiClient.service.addToCollection(userId = userId, charmId = charmId)
             } catch (e: Exception) {
                 e.printStackTrace()
             }

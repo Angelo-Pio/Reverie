@@ -176,7 +176,9 @@ public class CharmService {
         }
 
         charm.get().getCollectors().add(user.get());
+        user.get().getCollected_charms().add(charm.get());
         Charm savedCharm = charmRepository.save(charm.get());
+        userRepository.save(user.get());
 
         return ResponseEntity
                 .ok()
@@ -215,5 +217,17 @@ public class CharmService {
         userRepository.save(user);
 
         return ResponseEntity.ok().build();
+    }
+
+    public ResponseEntity<?> getAllCharms(Long user_id) {
+        Optional<List<Charm>> created= userRepository.findAllCreated(user_id);
+        Optional<List<Charm>> collected = userRepository.findAllCollected(user_id);
+
+        if (created.isEmpty() &&  collected.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        List<Charm> charms = created.get();
+        charms.addAll(collected.get());
+        return ResponseEntity.ok(charms);
     }
 }
