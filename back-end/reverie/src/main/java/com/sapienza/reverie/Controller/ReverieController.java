@@ -63,6 +63,11 @@ public class ReverieController {
         return charmService.getDashboardCharms(user_id);
     }
 
+    @GetMapping("/charm/download/{charm_id}")
+    public ResponseEntity<?> downloadCharm(@PathVariable Long charm_id) {
+        return charmService.downloadCharm(charm_id);
+    }
+
 
 
     @GetMapping("/charm/created")

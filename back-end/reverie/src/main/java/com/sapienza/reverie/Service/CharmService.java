@@ -8,8 +8,8 @@ import com.sapienza.reverie.Repository.CommentRepository;
 import com.sapienza.reverie.Repository.UserRepository;
 import com.sapienza.reverie.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.core.io.Resource;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -229,5 +229,17 @@ public class CharmService {
         List<Charm> charms = created.get();
         charms.addAll(collected.get());
         return ResponseEntity.ok(charms);
+    }
+
+    public ResponseEntity<?> downloadCharm(Long charmId) {
+        Optional<Charm> charmOptional = charmRepository.findById(charmId);
+        if (charmOptional.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        Resource charm_image = fileStorageService.getCharmImage(charmOptional.get().getPictureUrl());
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + charmOptional.get().getPictureUrl() + "\"")
+                .contentType(MediaTypeFactory.getMediaType(charmOptional.get().getPictureUrl()).orElse(MediaType.APPLICATION_OCTET_STREAM))
+                .body(charm_image);
     }
 }

@@ -6,6 +6,7 @@ services:
     image: postgres:17
     volumes:
       - db_data:/var/lib/postgresql/data
+      
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PW}
@@ -19,6 +20,8 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: reverie-back_end
+    volumes:
+      - images:/app/uploads
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/${POSTGRES_DB}
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
@@ -31,3 +34,4 @@ services:
 
 volumes:
   db_data:
+  images:
