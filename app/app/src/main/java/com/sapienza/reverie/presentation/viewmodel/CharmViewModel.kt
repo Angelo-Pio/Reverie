@@ -23,6 +23,10 @@ class CharmViewModel() : ViewModel() {
     private val _recentComments = MutableStateFlow<List<CharmWithUserModel>>(emptyList())
     val recentComments = _recentComments.asStateFlow() // user -  comment
 
+    private val _newlyCollectedCharm = MutableStateFlow<CharmModel?>(null)
+
+    val newlyCollectedCharm = _newlyCollectedCharm.asStateFlow()
+
     fun loadCharms(userId : Long) {
         viewModelScope.launch {
             try {
@@ -78,14 +82,19 @@ class CharmViewModel() : ViewModel() {
         }
     }
 
-    fun collectCharm(userId : Long, charmId : Long){
+    fun collectCharm(userId : Long, charmId : Long): CharmModel?{
         viewModelScope.launch {
             try {
                 val result = ApiClient.service.addToCollection(userId = userId, charmId = charmId)
+                _newlyCollectedCharm.value = result
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
+    }
+
+    fun clearNewlyCollectedCharm() {
+        _newlyCollectedCharm.value = null
     }
 
 

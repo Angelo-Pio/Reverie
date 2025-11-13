@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.util.Size
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.launch
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
@@ -26,6 +27,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,18 +41,19 @@ import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
+import com.sapienza.reverie.domain.model.CharmModel
 import com.sapienza.reverie.presentation.ui.components.HomeNavBar
 import com.sapienza.reverie.presentation.ui.components.NavBar
 import com.sapienza.reverie.presentation.ui.components.TopBar
 import com.sapienza.reverie.presentation.viewmodel.CharmViewModel
 import com.sapienza.reverie.presentation.viewmodel.SessionViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun ScanQrScreen(
     onHomeClick: () -> Unit,
     onCollectionClick: () -> Unit,
-    onEditClick: () -> Unit,
-    onQrCodeScanned: (String) -> Unit // Callback to return the scanned QR code value
+    onCharmCollected: (CharmModel) -> Unit // Callback to return the scanned QR code value
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -87,7 +90,7 @@ fun ScanQrScreen(
                 // We have permission, show the camera preview
                 Box(modifier = Modifier.fillMaxSize()) {
                     CameraView(
-                        onQrCodeScanned = onQrCodeScanned
+                        onCharmCollected = onCharmCollected
                     )
                     Text(
                         text = "Point the camera at a QR code",
@@ -112,10 +115,11 @@ fun ScanQrScreen(
 }
 
 @Composable
-private fun CameraView(onQrCodeScanned: (String) -> Unit) {
+private fun CameraView(onCharmCollected: (CharmModel) -> Unit) {
     val sessionViewModel: SessionViewModel = viewModel()
     val charmViewModel: CharmViewModel = viewModel()
     val user by sessionViewModel.user.collectAsState()
+    val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
@@ -152,12 +156,21 @@ private fun CameraView(onQrCodeScanned: (String) -> Unit) {
                         .addOnSuccessListener { barcodes ->
                             barcodes.firstOrNull()?.rawValue?.let { qrValue ->
                                 if (qrValue.isNotEmpty()) {
-                                    hasScanned = true // Stop scanning after the first successful scan
+                                    hasScanned = true // Stop scanning
 
-                                    user?.let {user->
-                                        charmViewModel.collectCharm(user.id, qrValue.toLong())
+                                    val charmId = qrValue.toLongOrNull()
+                                    val currentUserId = user?.id
+
+                                    if (charmId != null && currentUserId != null) {
+                                        // Use a coroutine to call the suspend function in the ViewModel
+                                        scope.launch {
+                                            val collectedCharm: CharmModel? = charmViewModel.collectCharm(userId = currentUserId,charmId=charmId)
+                                            if (collectedCharm != null) {
+                                                // On success, trigger the navigation callback
+                                                onCharmCollected(collectedCharm)
+                                            }
+                                        }
                                     }
-                                    onQrCodeScanned(qrValue)
 
 
                                 }

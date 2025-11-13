@@ -1,8 +1,13 @@
 package com.sapienza.reverie.Service;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,6 +24,27 @@ public class FileStorageService {
             Files.createDirectories(rootLocation);
         } catch (Exception e) {
             throw new RuntimeException("Could not initialize storage location", e);
+        }
+    }
+
+    public Resource getCharmImage(String charm_filename){
+        try {
+            // 1. Resolve the full path of the file
+            Path imagePath = this.rootLocation.resolve(charm_filename).normalize();
+
+            // 2. Create a UrlResource from the path
+            Resource resource = new UrlResource(imagePath.toUri());
+
+            // 3. Check if the resource exists and is readable
+            if (resource.exists() && resource.isReadable()) {
+                return resource;
+            } else {
+                // Throw an exception if the file doesn't exist or can't be read
+                throw new RuntimeException("Could not read the file: " + charm_filename);
+            }
+        } catch (MalformedURLException e) {
+            // This exception is thrown if the path URI is invalid
+            throw new RuntimeException("Error while creating resource from path: " + e.getMessage());
         }
     }
 

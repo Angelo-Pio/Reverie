@@ -32,6 +32,6 @@ interface CharmRepository {
     suspend fun postComment(@Query("user_id")userId: Long, @Query("charm_id") charmId: Long,@Query("comment_content") text: String)
 
     @POST("charms/collect")
-    suspend fun addToCollection(@Query("user_id")userId: Long, @Query("charm_id") charmId: Long)
+    suspend fun addToCollection(@Query("user_id")userId: Long, @Query("charm_id") charmId: Long) : CharmModel
 
 }
