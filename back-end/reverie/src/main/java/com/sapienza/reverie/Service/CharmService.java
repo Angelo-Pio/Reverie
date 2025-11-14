@@ -85,8 +85,9 @@ public class CharmService {
             User user = charm.getComments().getFirst().getUser();
             ret_charms.add(Mapper.toCharmWithUserDto(charm,user,comment));
         }
-
-        return new ResponseEntity<>(ret_charms, HttpStatus.OK);
+        ResponseEntity<List<CharmWithUserDto>> responseEntity = new ResponseEntity<>(ret_charms, HttpStatus.OK);
+        System.out.println(responseEntity);
+        return responseEntity;
     }
 
     public ResponseEntity<?> getDashboardCharms(Long user_id) {
@@ -140,12 +141,14 @@ public class CharmService {
         }
         String imageUrl = fileStorageService.storeAndGetUrl(file);
 
+
         Charm charm = new Charm();
         charm.setDescription(charmDto.getDescription());
-        charm.setCreated_at(LocalDateTime.now());
+        charm.setCreated_at(charmDto.getCreated_at());
         charm.setCreator(user.get());
         charm.setPictureUrl(imageUrl);
         Charm savedCharm = charmRepository.save(charm);
+
 
         return ResponseEntity
                 .ok()
@@ -255,5 +258,12 @@ public class CharmService {
         }
         User creator = charmOptional.get().getCreator();
         return ResponseEntity.ok(Mapper.toUserDto(creator));
+    }
+
+    public UserDto createGoogleUser(User newUser) {
+
+        userRepository.save(newUser);
+        return  Mapper.toUserDto(newUser);
+
     }
 }

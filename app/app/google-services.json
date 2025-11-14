@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "912717657101",
+    "project_id": "sapienza-reverie",
+    "storage_bucket": "sapienza-reverie.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:912717657101:android:bfdd8c1e1fd93c52fb5144",
+        "android_client_info": {
+          "package_name": "com.sapienza.reverie"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCP82y3KVoYzcKKEUTlk_SYUgTzXMreYgM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -34,16 +34,16 @@ public class ReverieController {
 
 
     /*TODO
-        * authentication (sign up page + google sign in)
-        * profile picture
-        * qr code scanning and generation -> link to image
-        * navigation improvements
-        *
-    * */
+     * authentication (sign up page + google sign in)
+     * profile picture
+     * qr code scanning and generation -> link to image
+     * navigation improvements
+     *
+     * */
 
     @PostMapping("/charm/comment")
     public ResponseEntity<?> addComment(@RequestParam Long charm_id, @RequestParam String comment_content, @RequestParam Long user_id) {
-        return charmService.addComment(charm_id,comment_content,user_id);
+        return charmService.addComment(charm_id, comment_content, user_id);
     }
 
     @GetMapping("/charm/comment")
@@ -69,7 +69,6 @@ public class ReverieController {
     }
 
 
-
     @GetMapping("/charm/created")
     public ResponseEntity<?> getAllCharmsCreated(@RequestParam Long user_id) {
         return charmService.getAllCharmsCreated(user_id);
@@ -92,13 +91,17 @@ public class ReverieController {
 
 
     @PostMapping(value = "/charms", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<?> createCharm(@ModelAttribute CharmDto charmDto, @RequestParam("user_id") Long user_id, @RequestParam("file") MultipartFile file) {
-        return charmService.createCharm(charmDto,user_id,file);
+    public ResponseEntity<?> createCharm(
+            @RequestPart("charmDto") CharmDto charmDto,
+            @RequestParam("user_id") Long user_id,
+            @RequestPart("file") MultipartFile file
+    ) {
+        return charmService.createCharm(charmDto, user_id, file);
     }
 
     @PostMapping("/charms/collect")
     public ResponseEntity<?> addCharmToUserCollection(@RequestParam Long charm_id, @RequestParam Long user_id) {
-       return charmService.addCharmToUserCollection(charm_id,user_id);
+        return charmService.addCharmToUserCollection(charm_id, user_id);
     }
 
     @GetMapping("/user/profilePicture")
@@ -106,22 +109,20 @@ public class ReverieController {
         return charmService.getUserProfilePicture(user_id);
     }
 
-     @GetMapping("/charm/image")
+    @GetMapping("/charm/image")
     public ResponseEntity<?> getCharmImage(@RequestParam Long charm_id) {
-       return charmService.getCharmImage(charm_id);
+        return charmService.getCharmImage(charm_id);
     }
 
-     @GetMapping("/charm/madeBy")
+    @GetMapping("/charm/madeBy")
     public ResponseEntity<?> getCreator(@RequestParam Long charm_id) {
-       return charmService.getCreator(charm_id);
+        return charmService.getCreator(charm_id);
     }
-
-
 
 
     @PostMapping(value = "/user")
     public ResponseEntity<?> createUser(@ModelAttribute UserDto userDto, @RequestParam("file") MultipartFile file) {
 
-       return charmService.createUser(userDto,file);
+        return charmService.createUser(userDto, file);
     }
 }
