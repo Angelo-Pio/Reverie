@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.sapienza.reverie.domain.model.CharmModel
 import com.sapienza.reverie.domain.model.CharmWithUserModel
 import com.sapienza.reverie.domain.model.UserCommentModel
+import com.sapienza.reverie.domain.model.UserModel
 import com.sapienza.reverie.domain.repository.ApiClient
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -26,6 +27,10 @@ class CharmViewModel() : ViewModel() {
     private val _newlyCollectedCharm = MutableStateFlow<CharmModel?>(null)
 
     val newlyCollectedCharm = _newlyCollectedCharm.asStateFlow()
+
+    private val _charmCreator = MutableStateFlow<UserModel?>(null)
+    val charmCreator = _charmCreator.asStateFlow()
+
 
     fun loadCharms(userId : Long) {
         viewModelScope.launch {
@@ -82,19 +87,38 @@ class CharmViewModel() : ViewModel() {
         }
     }
 
-    fun collectCharm(userId : Long, charmId : Long): CharmModel?{
+    fun collectCharm(userId : Long, charmId : Long){
         viewModelScope.launch {
             try {
                 val result = ApiClient.service.addToCollection(userId = userId, charmId = charmId)
                 _newlyCollectedCharm.value = result
             } catch (e: Exception) {
                 e.printStackTrace()
+                null
             }
         }
+
     }
 
     fun clearNewlyCollectedCharm() {
         _newlyCollectedCharm.value = null
+    }
+
+    fun getCharmCreator(charm_id : Long) {
+
+        viewModelScope.launch {
+            try {
+                _charmCreator.value =  ApiClient.service.madeBy(charm_id = charm_id)
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+
+            }
+        }
+    }
+
+    fun clearCharmCreator() {
+        _charmCreator.value = null
     }
 
 

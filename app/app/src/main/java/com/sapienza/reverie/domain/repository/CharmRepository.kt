@@ -4,8 +4,13 @@ import com.sapienza.reverie.domain.model.CharmModel
 import com.sapienza.reverie.domain.model.CharmWithUserModel
 import com.sapienza.reverie.domain.model.CommentModel
 import com.sapienza.reverie.domain.model.UserCommentModel
+import com.sapienza.reverie.domain.model.UserModel
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -33,5 +38,18 @@ interface CharmRepository {
 
     @POST("charms/collect")
     suspend fun addToCollection(@Query("user_id")userId: Long, @Query("charm_id") charmId: Long) : CharmModel
+
+    @Multipart
+    @POST("user") // The endpoint URL for creating a user
+    suspend fun signUp(
+        @Part("username") username: RequestBody,
+        @Part("email") email: RequestBody,
+        @Part("password") password: RequestBody,
+        @Part file: MultipartBody.Part
+    )
+
+    @GET("charm/madeBy")
+    suspend fun madeBy(@Query("charm_id") charm_id : Long) : UserModel
+
 
 }

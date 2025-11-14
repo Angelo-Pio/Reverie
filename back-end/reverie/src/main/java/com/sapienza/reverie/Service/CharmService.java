@@ -206,7 +206,12 @@ public class CharmService {
 
         Optional<User> userOptional = userRepository.findByEmail(userDto.getEmail());
         if (userOptional.isPresent()){
+
             return ResponseEntity.badRequest().body("User with email " + userDto.getEmail() + " already exists");
+        }
+
+        if(userOptional.get().getPassword().length() < 8){
+            return ResponseEntity.badRequest().body("Password should be at least 8 characters long");
         }
 
         User user = new User();
@@ -241,5 +246,14 @@ public class CharmService {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + charmOptional.get().getPictureUrl() + "\"")
                 .contentType(MediaTypeFactory.getMediaType(charmOptional.get().getPictureUrl()).orElse(MediaType.APPLICATION_OCTET_STREAM))
                 .body(charm_image);
+    }
+
+    public ResponseEntity<?> getCreator(Long charmId) {
+        Optional<Charm> charmOptional = charmRepository.findById(charmId);
+        if (charmOptional.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        User creator = charmOptional.get().getCreator();
+        return ResponseEntity.ok(Mapper.toUserDto(creator));
     }
 }

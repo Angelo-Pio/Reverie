@@ -111,6 +111,13 @@ public class ReverieController {
        return charmService.getCharmImage(charm_id);
     }
 
+     @GetMapping("/charm/madeBy")
+    public ResponseEntity<?> getCreator(@RequestParam Long charm_id) {
+       return charmService.getCreator(charm_id);
+    }
+
+
+
 
     @PostMapping(value = "/user")
     public ResponseEntity<?> createUser(@ModelAttribute UserDto userDto, @RequestParam("file") MultipartFile file) {

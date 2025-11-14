@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.VibratorManager
+import android.util.Log
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
@@ -58,38 +60,38 @@ fun RevealScreen(
     )
     val pulseScale = remember { Animatable(1f) }
 
-    // Shake Detector Logic
-    DisposableEffect(Unit) {
-        val shakeDetector = ShakeDetector(context) {
+    // Shake Detector instance remembered across recompositions
+    val shakeDetector = remember {
+        ShakeDetector(context) {
             if (!isRevealed) {
-                isRevealed = true // Trigger the reveal on shake
+                Log.d("ShakeDetector", "Shake detected in RevealScreen!")
+                isRevealed = true
             }
         }
-        shakeDetector.start()
+    }
 
-        // Clean up the listener when the composable is disposed
-        onDispose {
-            shakeDetector.stop()
-        }
+    // Start/stop the shake detector when the composable enters/leaves composition
+    DisposableEffect(Unit) {
+        shakeDetector.start()
+        onDispose { shakeDetector.stop() }
     }
 
     // Post-reveal animation and navigation logic
     LaunchedEffect(isRevealed) {
         if (isRevealed) {
-            // Vibrate the phone
             vibrate(context)
 
-            // Pulse animation
+            // Pulse once
             pulseScale.animateTo(
                 targetValue = 1.1f,
-                animationSpec = infiniteRepeatable(
-                    animation = tween(500),
-                    repeatMode = RepeatMode.Reverse
-                )
+                animationSpec = tween(durationMillis = 1000)
+            )
+            pulseScale.animateTo(
+                targetValue = 1f,
+                animationSpec = tween(durationMillis = 1000)
             )
 
-            // Wait for 2 seconds then navigate
-            delay(2000)
+            // Navigate after pulse
             onRevealComplete()
         }
     }
@@ -104,6 +106,7 @@ fun RevealScreen(
         Charm(
             modifier = Modifier
                 .size(300.dp)
+                .aspectRatio(2f / 3f)
                 .scale(pulseScale.value),
             charmModel = charmModel
         )
@@ -149,6 +152,6 @@ private fun vibrate(context: Context) {
         val vibratorManager =
             context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
         val buzzer = vibratorManager.defaultVibrator
-        buzzer.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE))
+        buzzer.vibrate(VibrationEffect.createOneShot(400, VibrationEffect.DEFAULT_AMPLITUDE))
     }
 }

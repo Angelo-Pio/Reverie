@@ -1,5 +1,6 @@
 package com.sapienza.reverie.domain.repository
 
+import com.sapienza.reverie.properties.ApiProperties
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -20,7 +21,7 @@ object ApiClient {
         .build()
 
     private val retrofit = Retrofit.Builder()
-        .baseUrl("http://10.0.2.2:6001/reverie/api/") // ✅ Replace with your Spring server URL
+        .baseUrl(ApiProperties.API_BASE_PATH) // ✅ Replace with your Spring server URL
         .addConverterFactory(GsonConverterFactory.create())
         .client(client)
         .build()

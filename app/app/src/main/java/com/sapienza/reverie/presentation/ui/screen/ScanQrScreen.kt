@@ -58,17 +58,19 @@ fun ScanQrScreen(
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     var hasCameraPermission by remember {
-        mutableStateOf(ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
+        mutableStateOf(
+            ContextCompat.checkSelfPermission(
+                context, Manifest.permission.CAMERA
+            ) == PackageManager.PERMISSION_GRANTED
+        )
     }
 
 
     // This launcher will request the camera permission
     val permissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission(),
-        onResult = { isGranted ->
+        contract = ActivityResultContracts.RequestPermission(), onResult = { isGranted ->
             hasCameraPermission = isGranted
-        }
-    )
+        })
 
     // Request permission on first composition if we don't have it
     LaunchedEffect(key1 = true) {
@@ -78,8 +80,7 @@ fun ScanQrScreen(
     }
 
     Scaffold(
-        bottomBar = { HomeNavBar(onHomeClick, onCollectionClick) }
-    ) { innerPadding ->
+        bottomBar = { HomeNavBar(onHomeClick, onCollectionClick) }) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -120,82 +121,81 @@ private fun CameraView(onCharmCollected: (CharmModel) -> Unit) {
     val charmViewModel: CharmViewModel = viewModel()
     val user by sessionViewModel.user.collectAsState()
     val scope = rememberCoroutineScope()
+    val newlyCollectedCharm by charmViewModel.newlyCollectedCharm.collectAsState()
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
     var hasScanned by remember { mutableStateOf(false) }
 
+    LaunchedEffect(newlyCollectedCharm) {
+        newlyCollectedCharm?.let { charm ->
+            onCharmCollected(charm)
+            charmViewModel.clearNewlyCollectedCharm()
+        }
+    }
     AndroidView(
         factory = { ctx ->
             val previewView = PreviewView(ctx)
-            val cameraProvider = cameraProviderFuture.get()
-            val preview = Preview.Builder().build().also {
-                it.setSurfaceProvider(previewView.surfaceProvider)
-            }
+            val executor = ContextCompat.getMainExecutor(ctx)
 
-            val cameraSelector = CameraSelector.Builder()
-                .requireLensFacing(CameraSelector.LENS_FACING_BACK)
-                .build()
+            // **THE FIX IS HERE: Using addListener to avoid blocking the main thread**
+            cameraProviderFuture.addListener({
+                val cameraProvider = cameraProviderFuture.get()
+                val preview = Preview.Builder().build().also {
+                    it.setSurfaceProvider(previewView.surfaceProvider)
+                }
 
-            // Image analysis use case for QR code scanning
-            val imageAnalysis = ImageAnalysis.Builder()
-                .setTargetResolution(Size(previewView.width, previewView.height))
-                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                .build()
+                val cameraSelector = CameraSelector.Builder()
+                    .requireLensFacing(CameraSelector.LENS_FACING_BACK)
+                    .build()
 
-            imageAnalysis.setAnalyzer(ContextCompat.getMainExecutor(ctx)) { imageProxy ->
-                val image = imageProxy.image
-                if (image != null && !hasScanned) {
-                    val inputImage = InputImage.fromMediaImage(image, imageProxy.imageInfo.rotationDegrees)
-                    val options = BarcodeScannerOptions.Builder()
-                        .setBarcodeFormats(Barcode.FORMAT_QR_CODE)
-                        .build()
-                    val scanner = BarcodeScanning.getClient(options)
+                val imageAnalysis = ImageAnalysis.Builder()
+                    .setTargetResolution(Size(previewView.width, previewView.height))
+                    .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                    .build()
 
-                    scanner.process(inputImage)
-                        .addOnSuccessListener { barcodes ->
-                            barcodes.firstOrNull()?.rawValue?.let { qrValue ->
-                                if (qrValue.isNotEmpty()) {
-                                    hasScanned = true // Stop scanning
+                imageAnalysis.setAnalyzer(executor) { imageProxy ->
+                    val image = imageProxy.image
+                    if (image != null && !hasScanned) {
+                        val inputImage = InputImage.fromMediaImage(image, imageProxy.imageInfo.rotationDegrees)
+                        val options = BarcodeScannerOptions.Builder()
+                            .setBarcodeFormats(Barcode.FORMAT_QR_CODE)
+                            .build()
+                        val scanner = BarcodeScanning.getClient(options)
 
-                                    val charmId = qrValue.toLongOrNull()
-                                    val currentUserId = user?.id
+                        scanner.process(inputImage)
+                            .addOnSuccessListener { barcodes ->
+                                barcodes.firstOrNull()?.rawValue?.let { qrValue ->
+                                    if (qrValue.isNotEmpty()) {
+                                        hasScanned = true // Stop scanning
+                                        val charmId = qrValue.toLongOrNull()
+                                        val currentUserId = user?.id
 
-                                    if (charmId != null && currentUserId != null) {
-                                        // Use a coroutine to call the suspend function in the ViewModel
-                                        scope.launch {
-                                            val collectedCharm: CharmModel? = charmViewModel.collectCharm(userId = currentUserId,charmId=charmId)
-                                            if (collectedCharm != null) {
-                                                // On success, trigger the navigation callback
-                                                onCharmCollected(collectedCharm)
-                                            }
+                                        if (charmId != null && currentUserId != null) {
+                                            charmViewModel.collectCharm(
+                                                userId = currentUserId,
+                                                charmId = charmId
+                                            )
                                         }
                                     }
-
-
                                 }
                             }
-                        }
-                        .addOnFailureListener { /* Handle failure */ }
-                        .addOnCompleteListener {
-                            imageProxy.close() // Always close the imageProxy
-                        }
-                } else {
-                    imageProxy.close()
+                            .addOnCompleteListener { imageProxy.close() }
+                    } else {
+                        imageProxy.close()
+                    }
                 }
-            }
 
-            try {
-                // Unbind everything before rebinding
-                cameraProvider.unbindAll()
-                // Bind use cases to camera
-                cameraProvider.bindToLifecycle(lifecycleOwner, cameraSelector, preview, imageAnalysis)
-            } catch (e: Exception) {
-                // Handle binding errors
-            }
+                try {
+                    cameraProvider.unbindAll()
+                    cameraProvider.bindToLifecycle(lifecycleOwner, cameraSelector, preview, imageAnalysis)
+                } catch (e: Exception) {
+                    e.printStackTrace() // Log errors
+                }
+
+            }, executor)
 
             previewView
         },
         modifier = Modifier.fillMaxSize()
-    )
-}
+    )}
