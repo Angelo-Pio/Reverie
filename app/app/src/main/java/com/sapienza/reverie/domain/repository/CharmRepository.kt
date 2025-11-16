@@ -7,6 +7,8 @@ import com.sapienza.reverie.domain.model.UserCommentModel
 import com.sapienza.reverie.domain.model.UserModel
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import retrofit2.Response
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
@@ -48,8 +50,10 @@ interface CharmRepository {
         @Part file: MultipartBody.Part
     )
 
+    @POST("user/login/google")
+    suspend fun loginWithGoogle(@Body idToken: String): UserModel
+
     @GET("charm/madeBy")
     suspend fun madeBy(@Query("charm_id") charm_id : Long) : UserModel
-
 
 }

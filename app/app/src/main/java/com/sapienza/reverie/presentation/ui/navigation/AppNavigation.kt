@@ -36,8 +36,9 @@ fun AppNavigation() {
             entry<Screen.Login> {
                 LoginScreen(
                     onLoginClick = { backstack.add(Screen.Home) },
-                    onSignUpClick = { backstack.add(Screen.SignUp) }
+                    onSignUpClick = { backstack.add(Screen.SignUp) },
 
+                    onGoogleSignInClick = {backstack.add(Screen.Home)}
                 )
             }
             entry<Screen.SignUp> {

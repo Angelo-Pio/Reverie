@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "com.sapienza.reverie"
-        minSdk = 24
+        minSdk = 33
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
@@ -44,7 +44,12 @@ android {
 
 dependencies {
 
+    implementation("androidx.credentials:credentials:1.6.0-beta03")
+    implementation("androidx.credentials:credentials-play-services-auth:1.6.0-beta03")
+    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
+
     implementation("com.google.zxing:core:3.5.3")
+    implementation(libs.googleid)
 
     val cameraxVersion = "1.3.4" // Use a recent version
     implementation("androidx.camera:camera-core:$cameraxVersion")
