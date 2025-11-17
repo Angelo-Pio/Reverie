@@ -11,10 +11,11 @@ import java.util.Collections;
 public class GoogleTokenVerifier {
 
     // Use the same Web Client ID from your Google API Console that you used in the Android app
-    private static final String GOOGLE_CLIENT_ID = "YOUR_GOOGLE_WEB_CLIENT_ID";
+    private static final String GOOGLE_CLIENT_ID = "220913039576-2ue0inhmdus26r3rd0jsb0mn3a56cqhc.apps.googleusercontent.com";
 
     public GoogleIdToken.Payload verify(String idTokenString) throws Exception {
-        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new JacksonFactory())
+        GoogleIdTokenVerifier verifier =
+                new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new JacksonFactory())
                 .setAudience(Collections.singletonList(GOOGLE_CLIENT_ID))
                 .build();
 

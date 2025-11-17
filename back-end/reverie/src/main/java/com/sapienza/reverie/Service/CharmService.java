@@ -85,8 +85,9 @@ public class CharmService {
             User user = charm.getComments().getFirst().getUser();
             ret_charms.add(Mapper.toCharmWithUserDto(charm,user,comment));
         }
-
-        return new ResponseEntity<>(ret_charms, HttpStatus.OK);
+        ResponseEntity<List<CharmWithUserDto>> responseEntity = new ResponseEntity<>(ret_charms, HttpStatus.OK);
+        System.out.println(responseEntity);
+        return responseEntity;
     }
 
     public ResponseEntity<?> getDashboardCharms(Long user_id) {
@@ -255,5 +256,12 @@ public class CharmService {
         }
         User creator = charmOptional.get().getCreator();
         return ResponseEntity.ok(Mapper.toUserDto(creator));
+    }
+
+    public UserDto createGoogleUser(User newUser) {
+
+        userRepository.save(newUser);
+        return  Mapper.toUserDto(newUser);
+
     }
 }

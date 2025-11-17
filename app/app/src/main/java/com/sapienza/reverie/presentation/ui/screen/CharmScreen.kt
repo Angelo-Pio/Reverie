@@ -69,8 +69,7 @@ fun CharmScreen(
     charmModel: CharmModel = CharmModel.foo(),
     onCollectionClick: () -> Unit = {},
     onHomeClick: () -> Unit = {},
-    onQRShareClick: (Long) -> Unit = {},
-    onLinkShareClick: () -> Unit = {}
+    onQRShareClick: (Long) -> Unit = {}
 ) {
     var showCommentPopUp by remember { mutableStateOf(false) }
 

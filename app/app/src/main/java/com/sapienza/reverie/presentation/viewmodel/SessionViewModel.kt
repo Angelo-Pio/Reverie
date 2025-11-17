@@ -2,6 +2,7 @@ package com.sapienza.reverie.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 import com.sapienza.reverie.domain.model.UserModel
 import com.sapienza.reverie.domain.repository.ApiClient
@@ -24,13 +25,27 @@ class SessionViewModel : ViewModel() {
     private val _signUpError = MutableStateFlow<String?>(null)
     val signUpError: StateFlow<String?> = _signUpError.asStateFlow()
 
-
-    fun loginUser(userModel: UserModel) {
-        _user.value = userModel
+    fun loginUser(email:String,password: String) {
+        viewModelScope.launch {
+            try {
+                val user = ApiClient.service.login(email, password )
+                _user.value = user
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
     }
 
     fun logout() {
-        _user.value = null
+        viewModelScope.launch {
+            try {
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            } finally {
+                _user.value = null
+            }
+        }
     }
 
     fun loginWithGoogle(idToken: String) {
@@ -70,7 +85,7 @@ class SessionViewModel : ViewModel() {
                     file = filePart
                 )
 
-                loginUser(userModel)
+                loginUser(userModel.email,userModel.password)
 
             } catch (e: Exception) {
                 e.printStackTrace() // This is fine for debugging, it prints the stack trace

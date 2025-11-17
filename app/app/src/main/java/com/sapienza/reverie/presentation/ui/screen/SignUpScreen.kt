@@ -219,7 +219,7 @@ fun SignUpScreen(
                                 snackbarHostState.showSnackbar("Please fill all fields and select a picture.")
                             }
                         } else {
-                            val userModel = UserModel(username = username, email = email, password = password, id = 0, profilePicture = "")
+                            val userModel = UserModel(username = username, email = email, password = password, id = 0, profilePictureUrl = "")
                             sessionViewModel.signUp(userModel, file)
                         }
                     }

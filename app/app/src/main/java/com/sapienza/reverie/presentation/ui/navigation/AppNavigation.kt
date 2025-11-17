@@ -17,6 +17,7 @@ import com.sapienza.reverie.presentation.ui.screen.ScanQrScreen
 import com.sapienza.reverie.presentation.ui.screen.SearchImageScreen
 import com.sapienza.reverie.presentation.ui.screen.ShareQrScreen
 import com.sapienza.reverie.presentation.ui.screen.SignUpScreen
+import com.sapienza.reverie.presentation.viewmodel.CharmViewModel
 import com.sapienza.reverie.presentation.viewmodel.SessionViewModel
 
 
@@ -25,6 +26,8 @@ fun AppNavigation() {
 
     val backstack = remember { mutableStateListOf<Screen>(Screen.Login) }
     val sessionViewModel: SessionViewModel = viewModel()
+    val charmViewModel : CharmViewModel = viewModel()
+
 
 
 
@@ -53,6 +56,7 @@ fun AppNavigation() {
                     onScanClick = { backstack.add(Screen.ScanQR) }, // TODO : this should redirect to a screen used to scan a QR code not share it !
                     onEditClick = { backstack.add(Screen.SearchImage) },
                     onLogOutClick = {
+                        charmViewModel.clearAllData()
                         sessionViewModel.logout()
                         backstack.clear()
                         backstack.add(Screen.Login)
@@ -83,7 +87,7 @@ fun AppNavigation() {
                     onCollectionClick = { backstack.add(Screen.Collection) },
                     onHomeClick = { backstack.add(Screen.Home) },
                     onQRShareClick = { charm_id -> backstack.add(Screen.ShareQr(charm_id = charm_id)) },
-                    //onLinkShareClick : () -> Unit = {} TODO: implement link sharing (copy on clipboard)
+
                 )
             }
             entry<Screen.ShareQr> {

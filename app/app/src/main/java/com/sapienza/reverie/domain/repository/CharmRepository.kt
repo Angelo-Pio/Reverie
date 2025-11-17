@@ -51,7 +51,10 @@ interface CharmRepository {
     )
 
     @POST("user/login/google")
-    suspend fun loginWithGoogle(@Body idToken: String): UserModel
+    suspend fun loginWithGoogle(@Query("token") idToken: String): UserModel
+
+    @POST("user/login")
+    suspend fun login(@Query("email") email : String , @Query("password") password : String): UserModel
 
     @GET("charm/madeBy")
     suspend fun madeBy(@Query("charm_id") charm_id : Long) : UserModel

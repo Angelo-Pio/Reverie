@@ -1,17 +1,14 @@
 package com.sapienza.reverie.presentation.ui.screen
 
-import androidx.compose.foundation.layout.Box
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
@@ -19,22 +16,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sapienza.reverie.domain.model.CharmModel
-import com.sapienza.reverie.domain.model.UserModel
-import com.sapienza.reverie.presentation.viewmodel.CharmViewModel
 import com.sapienza.reverie.presentation.ui.components.CharmCarousel
 import com.sapienza.reverie.presentation.ui.components.CommentList
 import com.sapienza.reverie.presentation.ui.components.CommentType
 import com.sapienza.reverie.presentation.ui.components.DashBoardNavBar
-import com.sapienza.reverie.presentation.ui.components.NavBar
 import com.sapienza.reverie.presentation.ui.components.ScanButton
 import com.sapienza.reverie.presentation.ui.components.TopBar
+import com.sapienza.reverie.presentation.viewmodel.CharmViewModel
 import com.sapienza.reverie.presentation.viewmodel.SessionViewModel
 import com.sapienza.reverie.ui.theme.ReverieTheme
 
@@ -45,9 +39,9 @@ fun DashboardScreen(
     onEditClick: () -> Unit = {},
     onLogOutClick: () -> Unit = {},
     onCollectionClick: () -> Unit = {},
-    onCharmClick:(CharmModel) -> Unit = {}
+    onCharmClick: (CharmModel) -> Unit = {}
 
-    ) {
+) {
     val sessionViewMode: SessionViewModel = viewModel()
     val charmViewModel: CharmViewModel = viewModel()
 
@@ -66,12 +60,18 @@ fun DashboardScreen(
     val carouselCharms by charmViewModel.carouselCharms.collectAsState()
     val recentComments by charmViewModel.recentComments.collectAsState()
 
-
+    Log.e("comment list", "commentsWithCharm: $recentComments")
 
 
 
     Scaffold(
-        bottomBar = { DashBoardNavBar(onLogOutClick, onCollectionClick, onEditClick) },
+        bottomBar = {
+            DashBoardNavBar(
+                onLogOutClick,
+                onCollectionClick,
+                onEditClick
+            )
+        },
         floatingActionButton = { ScanButton(onClick = onScanClick) },
         floatingActionButtonPosition = FabPosition.End,
         topBar = {

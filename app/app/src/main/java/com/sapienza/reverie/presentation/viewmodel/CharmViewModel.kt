@@ -121,6 +121,18 @@ class CharmViewModel() : ViewModel() {
         _charmCreator.value = null
     }
 
+    // In /app/src/main/java/com/sapienza/reverie/presentation/viewmodel/CharmViewModel.kt
+
+    fun clearAllData() {
+        _charms.value = emptyList()
+        _comments.value = emptyList()
+        _carouselCharms.value = emptyList()
+        _recentComments.value = emptyList()
+        _newlyCollectedCharm.value = null
+        _charmCreator.value = null
+    }
+
+
 
 
 }

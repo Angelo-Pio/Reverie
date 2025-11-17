@@ -36,7 +36,7 @@ class GoogleAuthUiClient(private val context: Context, private val viewModel : S
 
         val googleIdOption: GetGoogleIdOption = GetGoogleIdOption.Builder()
             .setFilterByAuthorizedAccounts(false) // Set to true if you only want to show existing accounts
-            .setServerClientId(ApiProperties.GOOGLE_SIGN_IN_CLIENT_ID)
+            .setServerClientId(ApiProperties.CLIENT_ID)
             .setNonce(hashedNonce)
             .build()
 

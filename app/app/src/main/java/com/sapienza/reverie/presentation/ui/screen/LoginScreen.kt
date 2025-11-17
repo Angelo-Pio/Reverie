@@ -11,12 +11,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -55,7 +58,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun LoginScreen(
     // These will be used for navigation later
-    onLoginClick: (userModel: UserModel) -> Unit = {},
+    onLoginClick: () -> Unit = {},
     viewModel: SessionViewModel = viewModel(),
     onSignUpClick: () -> Unit = {},
     onGoogleSignInClick: () -> Unit
@@ -66,7 +69,7 @@ fun LoginScreen(
 
     val coroutineScope = rememberCoroutineScope()
 
-    val googleAuthUiClient = remember { GoogleAuthUiClient(context) }
+    val googleAuthUiClient = remember { GoogleAuthUiClient(context, sessionViewModel) }
 
 
     // States for email, password, and password visibility
@@ -159,17 +162,19 @@ fun LoginScreen(
                 modifier = Modifier.fillMaxWidth(), onClick = {
 
                     //TODO user auth returns user object
-                    val user = UserModel(
-                        username = "Angelo",
-                        id = 1,
-                        email = "angelo@gmail.com",
-                        password = "secret",
-                        profilePicture = "profile.png",
-                    )
-                    viewModel.loginUser(user)
-                    onLoginClick(user)
+                    /*
+                                        val user = UserModel(
+                                            username = "Angelo",
+                                            id = 1,
+                                            email = "angelo@gmail.com",
+                                            password = "secret",
+                                            profilePicture = "profile.png",
+                                        )
+                    */
+                    viewModel.loginUser(email, password)
+                    onLoginClick()
                 }) {
-                Text("LOG IN")
+                Text("Log In", fontFamily = ReverieFontFamily("Bold"))
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -203,7 +208,14 @@ fun LoginScreen(
                             }
                         }
                     }
-                }) {}
+                },
+                elevation = ButtonDefaults.elevatedButtonElevation(12.dp),
+
+
+                ) {
+
+                Text(text = "Sign In with Google", fontFamily = ReverieFontFamily("Bold"))
+            }
 
             Spacer(modifier = Modifier.height(16.dp))
 

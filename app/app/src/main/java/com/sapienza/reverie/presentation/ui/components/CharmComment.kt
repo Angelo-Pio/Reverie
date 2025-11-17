@@ -34,19 +34,23 @@ import com.sapienza.reverie.domain.model.UserModel
 import com.sapienza.reverie.presentation.viewmodel.SessionViewModel
 
 @Composable
-fun CharmComment(user : UserModel, commentModel: CommentModel) {
+fun CharmComment(user: UserModel, commentModel: CommentModel) {
 
-    val sessionViewModel : SessionViewModel = viewModel()
+    val sessionViewModel: SessionViewModel = viewModel()
     val LoggedUser by sessionViewModel.user.collectAsState()
     var username = user.username
-    LoggedUser?.let { u -> {
+    LoggedUser?.let { u ->
+
         if (user.id == u.id) {
-          username = "You"
+            username = "You"
         }
-    } }
+
+    }
 
     ElevatedCard(
-        modifier = Modifier.padding(10.dp).fillMaxSize(),
+        modifier = Modifier
+            .padding(10.dp)
+            .fillMaxSize(),
         elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
         shape = RoundedCornerShape(size = 12.dp)
     ) {
@@ -54,7 +58,7 @@ fun CharmComment(user : UserModel, commentModel: CommentModel) {
             //ROW 1
 
             Row(verticalAlignment = Alignment.CenterVertically) {
-                UserPicture(profilePicture = user.profilePicture, Modifier.size(40.dp))
+                UserPicture(profilePicture = user.profilePictureUrl, modifier = Modifier.size(40.dp))
                 Spacer(modifier = Modifier.width(12.dp))
                 Text(text = username, fontSize = 18.sp, fontFamily = FontFamily.SansSerif)
             }
@@ -69,27 +73,36 @@ fun CharmComment(user : UserModel, commentModel: CommentModel) {
 }
 
 @Composable
-fun CharmCommentWithCharm(userModel: UserModel ,  commentContent : String, charmModel: CharmModel,onCharmClick : (CharmModel) -> Unit) {
-    val sessionViewModel : SessionViewModel = viewModel()
-    val LoggedUser by sessionViewModel.user.collectAsState()
+fun CharmCommentWithCharm(
+    userModel: UserModel,
+    commentContent: String,
+    charmModel: CharmModel,
+    onCharmClick: (CharmModel) -> Unit
+) {
+    val sessionViewModel: SessionViewModel = viewModel()
+
+    val loggedUser by sessionViewModel.user.collectAsState()
     var username = userModel.username
-    LoggedUser?.let { u -> {
+    loggedUser?.let { u ->
         if (userModel.id == u.id) {
             username = "You"
         }
-    } }
+    }
     ElevatedCard(
         modifier = Modifier.padding(10.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
         shape = RoundedCornerShape(size = 6.dp)
 
     ) {
-        Row(modifier=Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
             //ROW 1
             Column(modifier = Modifier.weight(1f)) {
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    UserPicture(profilePicture = userModel.profilePicture, Modifier.size(40.dp))
+                    UserPicture(
+                        profilePicture = loggedUser?.profilePictureUrl,
+                        modifier = Modifier.size(40.dp)
+                    )
                     Spacer(modifier = Modifier.width(12.dp))
                     Text(text = username, fontSize = 18.sp, fontFamily = FontFamily.SansSerif)
                 }
@@ -103,9 +116,12 @@ fun CharmCommentWithCharm(userModel: UserModel ,  commentContent : String, charm
             }
 
             Charm(
-                modifier = Modifier.width(50.dp).aspectRatio(2f/3f).padding(6.dp),
+                modifier = Modifier
+                    .width(50.dp)
+                    .aspectRatio(2f / 3f)
+                    .padding(6.dp),
                 charmModel = charmModel,
-                onClick = {onCharmClick(charmModel)}
+                onClick = { onCharmClick(charmModel) }
             )
 
         }
@@ -137,7 +153,11 @@ fun CharmCommentPreview() {
     ) {
         // 4. Use the items extension function
         items(users) { user ->
-            CharmCommentWithCharm(userModel = user, commentContent = CommentModel.foo().text, charmModel = CharmModel.foo(), onCharmClick = {})
+            CharmCommentWithCharm(
+                userModel = user,
+                commentContent = CommentModel.foo().text,
+                charmModel = CharmModel.foo(),
+                onCharmClick = {})
         }
     }
 

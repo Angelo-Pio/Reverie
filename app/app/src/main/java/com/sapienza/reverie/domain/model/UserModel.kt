@@ -9,7 +9,7 @@ data class UserModel(
     val username: String,
     val email: String,
     val password: String ? = null,
-    val profilePicture: String,
+    val profilePictureUrl: String,
 
 
     ){
@@ -20,7 +20,7 @@ data class UserModel(
                 username = "foo",
                 email ="foo@gmail.com",
                 password = "secret",
-                profilePicture = ApiProperties.API_FOO_IMAGE_PATH
+                profilePictureUrl = ApiProperties.API_FOO_IMAGE_PATH
             )
         }
     }
