@@ -25,15 +25,31 @@ class SessionViewModel : ViewModel() {
     private val _signUpError = MutableStateFlow<String?>(null)
     val signUpError: StateFlow<String?> = _signUpError.asStateFlow()
 
-    fun loginUser(email:String,password: String) {
+    private val _loginError = MutableStateFlow<String?>(null)
+    val loginError: StateFlow<String?> = _loginError.asStateFlow()
+
+
+    fun loginUser(email: String, password: String) {
         viewModelScope.launch {
+            // 2. Clear previous errors before trying to log in
+            _loginError.value = null
             try {
-                val user = ApiClient.service.login(email, password )
+                val user = ApiClient.service.login(email, password)
                 _user.value = user
             } catch (e: Exception) {
+                // 3. Catch exceptions and set the error message
                 e.printStackTrace()
+                if (e is retrofit2.HttpException && e.code() == 401) {
+                    _loginError.value = "Email or password incorrect. Please try again."
+                } else {
+                    _loginError.value = "An unexpected error occurred. Please try again later."
+                }
             }
         }
+    }
+
+    fun clearLoginError() {
+        _loginError.value = null
     }
 
     fun logout() {

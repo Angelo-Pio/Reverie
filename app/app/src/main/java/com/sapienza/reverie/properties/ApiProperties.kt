@@ -6,7 +6,7 @@ class ApiProperties {
     companion object {
         // Use 'const' for compile-time constants for better performance
 
-        const val SERVER_IP = "192.168.1.16"
+        const val SERVER_IP = "192.168.1.37"
 
         var API_BASE_PATH = "http://${SERVER_IP}:6001/reverie/api/"
         var API_IMAGES_BASE_PATH = "http://${SERVER_IP}:6001/reverie/api/images?filename="

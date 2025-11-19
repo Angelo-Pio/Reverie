@@ -27,6 +27,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -71,8 +73,22 @@ fun LoginScreen(
 
     val googleAuthUiClient = remember { GoogleAuthUiClient(context, sessionViewModel) }
 
+    val user by viewModel.user.collectAsState()
+    val loginError by viewModel.loginError.collectAsState()
 
-    // States for email, password, and password visibility
+    LaunchedEffect(user) {
+        if (user != null) {
+            onLoginClick()
+        }
+    }
+
+    LaunchedEffect(loginError) {
+        loginError?.let { error ->
+            Toast.makeText(context, error, Toast.LENGTH_LONG).show()
+            viewModel.clearLoginError()
+        }
+    }
+
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var isPasswordVisible by remember { mutableStateOf(false) }
@@ -161,18 +177,7 @@ fun LoginScreen(
             Button(
                 modifier = Modifier.fillMaxWidth(), onClick = {
 
-                    //TODO user auth returns user object
-                    /*
-                                        val user = UserModel(
-                                            username = "Angelo",
-                                            id = 1,
-                                            email = "angelo@gmail.com",
-                                            password = "secret",
-                                            profilePicture = "profile.png",
-                                        )
-                    */
                     viewModel.loginUser(email, password)
-                    onLoginClick()
                 }) {
                 Text("Log In", fontFamily = ReverieFontFamily("Bold"))
             }

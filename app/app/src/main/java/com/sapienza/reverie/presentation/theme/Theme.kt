@@ -41,10 +41,11 @@ private val DarkColorScheme = darkColorScheme(
 private val LightColorScheme = lightColorScheme(
     primary = CyanLogo30,
     onPrimary = Color.Black,
-    secondary = PurpleGrey40,
-    tertiary = Pink40,
-    primaryContainer = MagentaLogo30,
-    onPrimaryContainer = MagentaLogo50,
+    secondary = Color(0xFFFAFAFA),
+    tertiary = Color(0xFFFAFAFA),
+    primaryContainer = Color(0xFFFAFAFA),
+    onPrimaryContainer = Color(0xFFFAFAFA),
+    background = Color(0xFFfafdff)
 
 
 
