@@ -29,9 +29,10 @@ import com.sapienza.reverie.ui.theme.ReverieTheme
 
 
 /*
-TODO:
-    * sign up with google
-    * cloud computing ??
+    TODO:
+        * password hashing
+        * JWT for session handling
+        * Charm creation feature
  */
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
