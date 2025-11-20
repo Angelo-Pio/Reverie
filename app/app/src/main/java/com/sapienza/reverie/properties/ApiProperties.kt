@@ -17,6 +17,9 @@ class ApiProperties {
         const val CLIENT_ID = "220913039576-2ue0inhmdus26r3rd0jsb0mn3a56cqhc.apps.googleusercontent.com"
         const val CLIENT_SECRET = "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"
 
+        // Search Engine API
+        const val GOOGLE_API_KEY = "AIzaSyABN5LQXUjAfN301yX9MmPi7b1BsJEP32A"
+        const val GOOGLE_CX = "97904ceb3c1ee4d78"
     }
 
 }

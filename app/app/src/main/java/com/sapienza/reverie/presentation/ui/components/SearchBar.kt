@@ -30,39 +30,35 @@ import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GoogleSearchBar() {
-    // States remain the same
-    var query by remember { mutableStateOf("") }
+fun GoogleSearchBar(
+    query: String,
+    onQueryChanged: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
     var isActive by remember { mutableStateOf(false) }
     val searchHistory = remember { mutableStateListOf("cats", "dogs", "landscapes") }
 
-    // Use a Box to center the SearchBar, as it no longer fills width by default in the new API
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
     ) {
         SearchBar(
-            // Parameters that were previously on SearchBar are now moved to the inputField
-            modifier = Modifier.align(Alignment.TopCenter), // Align the SearchBar
+            modifier = Modifier.align(Alignment.TopCenter),
             query = query,
-            onQueryChange = { newQuery ->
-                query = newQuery
+            onQueryChange = { newValue ->
+                onQueryChanged(newValue)
             },
             onSearch = { searchQuery ->
-                println("User searched for: $searchQuery")
                 if (searchQuery.isNotBlank()) {
                     searchHistory.add(0, searchQuery)
                 }
                 isActive = false
             },
             active = isActive,
-            onActiveChange = { activeState ->
-                isActive = activeState
-            },
+            onActiveChange = { isActive = it },
             placeholder = { Text("Search for images...") },
-            leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search Icon") }
-            // The `content` lambda for the active state remains the same
+            leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) }
         ) {
             LazyColumn(
                 modifier = Modifier.fillMaxWidth(),
@@ -71,14 +67,15 @@ fun GoogleSearchBar() {
             ) {
                 items(searchHistory) { historyItem ->
                     Row(
-                        modifier = Modifier.clickable {
-                            query = historyItem
-                        }
+                        modifier = Modifier
+                            .clickable {
+                                onQueryChanged(historyItem)
+                            }
                     ) {
                         Icon(
-                            modifier = Modifier.padding(end = 12.dp),
                             imageVector = Icons.Default.History,
-                            contentDescription = "History Icon"
+                            contentDescription = null,
+                            modifier = Modifier.padding(end = 12.dp)
                         )
                         Text(text = historyItem)
                     }
@@ -89,14 +86,4 @@ fun GoogleSearchBar() {
 }
 
 
-@Composable
-@Preview
-fun SearchBarPreview(){
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(8.dp)
-    ) {
-        GoogleSearchBar()
-    }
-}
+

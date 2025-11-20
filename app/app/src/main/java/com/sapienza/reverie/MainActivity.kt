@@ -39,7 +39,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            ReverieTheme { // By default, dynamicColor is now false
+            ReverieTheme {
                 AppNavigation()
             }
 

@@ -68,7 +68,7 @@ fun AppNavigation() {
             entry<Screen.CharmEdit> { screen ->
                 //TODO: search implementation, saving image etc.
                 CharmEditScreen(
-                    charmImage = screen.image,
+                    imageUrl = screen.image,
                     onCancelClick = { backstack.add(Screen.Home) },
                     onSaveClick = { backstack.add(Screen.Collection) }
                 )
