@@ -9,31 +9,54 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ModeEdit
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.sapienza.reverie.presentation.ui.components.DraggableOverlayImage
+import com.sapienza.reverie.presentation.ui.components.DraggableOverlayText
 import com.sapienza.reverie.presentation.ui.components.EditBar
 import com.sapienza.reverie.presentation.ui.components.SaveButton
+import com.sapienza.reverie.presentation.ui.components.Sticker
 import com.sapienza.reverie.presentation.ui.components.TopBar
 import com.sapienza.reverie.properties.ApiProperties
 import com.sapienza.reverie.ui.theme.ReverieTheme
 
 @Composable
 fun CharmEditScreen(
-    onCancelClick: () -> Unit = {},
-    onSaveClick: () -> Unit = {},
-    imageUrl: String
+    onCancelClick: () -> Unit = {}, onSaveClick: () -> Unit = {}, imageUrl: String
 ) {
+
+    val items = remember { mutableStateListOf<Sticker>() }
+
     Scaffold(
-        bottomBar = { EditBar(onCancelClick = onCancelClick) },
+        bottomBar = {
+            EditBar(
+                onCancelClick = onCancelClick,
+                onTextClick = {
+                    items.add(
+                        Sticker.TextItem(
+                            id = System.currentTimeMillis(), text = "New Text"
+                        )
+                    )
+                },
+                onAddImageClick = {
+                    items.add(
+                        Sticker.ImageItem(
+                            id = System.currentTimeMillis(), imageUrl = imageUrl
+                        )
+                    )
+                }
+            )
+        },
         topBar = { TopBar(title = "Build your Charm", icon = Icons.Filled.ModeEdit) },
         floatingActionButton = {
             SaveButton(
-                modifier = Modifier.padding(bottom = 1.dp, end = 5.dp),
-                onClick = onSaveClick
+                modifier = Modifier.padding(bottom = 1.dp, end = 5.dp), onClick = onSaveClick
             )
         }) { innerPadding ->
 
@@ -56,12 +79,30 @@ fun CharmEditScreen(
                     modifier = Modifier.fillMaxSize()
                 )*/
                 AsyncImage(
-                        model = imageUrl,
-                        contentDescription = null,
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop
-                    )
+                    model = imageUrl,
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+
+                // overlays
+
+                items.forEachIndexed { index, item ->
+                    if (item is Sticker.TextItem) {
+                        DraggableOverlayText(
+                            item,
+                            onTextChange = { newText ->
+                                items[index] = item.copy(text = newText)
+                            })
+
+                    }
+                    if (item is Sticker.ImageItem) {
+
+                        DraggableOverlayImage(item)
+                    }
+                }
             }
+
 
         }
 

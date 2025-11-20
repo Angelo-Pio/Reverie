@@ -3,6 +3,7 @@ package com.sapienza.reverie.presentation.ui.components
 import androidx.compose.foundation.background
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cancel
+import androidx.compose.material.icons.filled.ImageSearch
 import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.TextFields
@@ -20,7 +21,13 @@ import com.sapienza.reverie.ui.theme.NavBarColor
 
 
 @Composable
-fun EditBar(onCancelClick: () -> Unit = {}) {
+fun EditBar(
+    onCancelClick: () -> Unit = {},
+    onCameraClick: () -> Unit = {},
+    onTextClick: () -> Unit = {},
+    onAddImageClick: () -> Unit = {}
+
+) {
     NavigationBar (
         modifier = Modifier.background(
             brush = Brush.horizontalGradient(
@@ -48,13 +55,13 @@ fun EditBar(onCancelClick: () -> Unit = {}) {
             icon = { Icon(Icons.Filled.TextFields, contentDescription = null) },
             label = { Text("Text") },
             selected = false,
-            onClick = { /*TODO*/ }
+            onClick = onTextClick
         )
         NavigationBarItem(
-            icon = { Icon(Icons.Filled.Search, contentDescription = null) },
-            label = { Text("Search") },
+            icon = { Icon(Icons.Filled.ImageSearch, contentDescription = null) },
+            label = { Text("Add Image") },
             selected = false,
-            onClick = { /*TODO*/ }
+            onClick = onAddImageClick
         )
         NavigationBarItem(
             icon = { Icon(Icons.Filled.Cancel, contentDescription = null) },
