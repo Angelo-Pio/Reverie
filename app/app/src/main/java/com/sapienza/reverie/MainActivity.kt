@@ -32,7 +32,7 @@ import com.sapienza.reverie.ui.theme.ReverieTheme
     TODO:
         * password hashing
         * JWT for session handling
-        * Charm creation feature
+        * increase Image quality when creating images, color text ?
  */
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -44,6 +44,9 @@ android {
 
 dependencies {
 
+    implementation("dev.shreyaspatil:capturable:1.0.3")
+
+
     implementation("androidx.credentials:credentials:1.6.0-beta03")
     implementation("androidx.credentials:credentials-play-services-auth:1.6.0-beta03")
     implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")

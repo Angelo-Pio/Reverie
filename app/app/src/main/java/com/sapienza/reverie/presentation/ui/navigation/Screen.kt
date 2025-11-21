@@ -27,6 +27,9 @@ sealed interface Screen {
     data class CharmEdit(val image: String) : Screen
 
     @Serializable
+    data object SearchMainImage : Screen
+
+    @Serializable
     data object SearchImage : Screen
 
     @Serializable

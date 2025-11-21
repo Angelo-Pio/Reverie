@@ -1,11 +1,7 @@
 package com.sapienza.reverie.presentation.ui.components
 
-import android.R.attr.onClick
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTransformGestures
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.offset
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
@@ -20,47 +16,43 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.sp
-import androidx.xr.runtime.math.toDegrees
 import coil.compose.AsyncImage
-import kotlin.math.PI
+import kotlin.math.roundToInt
 
 sealed class Sticker {
     data class TextItem(
         val id: Long,
         val text: String,
-        var scale: Float = 1f,
-        var rotation: Float = 0f,
-        var offsetX: Float = 0f,
-        var offsetY: Float = 0f
+        val scale: Float = 1f,
+        val rotation: Float = 0f,
+        val offsetX: Float = 0f,
+        val offsetY: Float = 0f
     ) : Sticker()
 
     data class ImageItem(
         val id: Long,
         val imageUrl: String,
-        var scale: Float = 1f,
-        var rotation: Float = 0f,
-        var offsetX: Float = 0f,
-        var offsetY: Float = 0f
+        val scale: Float = 1f,
+        val rotation: Float = 0f,
+        val offsetX: Float = 0f,
+        val offsetY: Float = 0f
     ) : Sticker()
 }
+
+// In app/src/main/java/com/sapienza/reverie/presentation/ui/components/Sticker.kt
 
 @Composable
 fun DraggableOverlayText(
     item: Sticker.TextItem,
+    // Change the signature to accept deltas
+    onTransform: (pan: androidx.compose.ui.geometry.Offset, zoom: Float, rotation: Float) -> Unit,
     onTextChange: (String) -> Unit
 ) {
-    var offsetX by remember { mutableStateOf(item.offsetX) }
-    var offsetY by remember { mutableStateOf(item.offsetY) }
-    var rotationDeg by remember { mutableStateOf(item.rotation) }
-    var scale by remember { mutableStateOf(item.scale) }
-
     var showDialog by remember { mutableStateOf(false) }
 
     if (showDialog) {
-
         EditTextDialog(
             initialText = item.text,
             onConfirm = {
@@ -75,21 +67,19 @@ fun DraggableOverlayText(
 
     Text(
         text = item.text,
-        fontSize = (22.sp * scale),
+        fontSize = (22.sp * item.scale),
         color = Color.White,
         modifier = Modifier
-            .offset { IntOffset(offsetX.toInt(), offsetY.toInt()) }
+            .offset { IntOffset(item.offsetX.roundToInt(), item.offsetY.roundToInt()) }
             .graphicsLayer(
-                scaleX = scale,
-                scaleY = scale,
-                rotationZ = rotationDeg
+                scaleX = item.scale,
+                scaleY = item.scale,
+                rotationZ = item.rotation
             )
             .pointerInput(Unit) {
-                detectTransformGestures { _, pan, zoom, rotationRadians ->
-                    offsetX += pan.x
-                    offsetY += pan.y
-                    scale *= zoom
-                    rotationDeg += Math.toDegrees(rotationRadians.toDouble()).toFloat()
+                detectTransformGestures { _, pan, zoom, rotation ->
+                    // Pass the deltas directly
+                    onTransform(pan, zoom, rotation)
                 }
             }
             .clickable {
@@ -99,34 +89,30 @@ fun DraggableOverlayText(
 }
 
 @Composable
-fun DraggableOverlayImage(item: Sticker.ImageItem) {
-
-    var offsetX by remember { mutableStateOf(item.offsetX) }
-    var offsetY by remember { mutableStateOf(item.offsetY) }
-    var rotationDeg by remember { mutableStateOf(item.rotation) }
-    var scale by remember { mutableStateOf(item.scale) }
-
+fun DraggableOverlayImage(
+    item: Sticker.ImageItem,
+    // Change the signature to accept deltas
+    onTransform: (pan: androidx.compose.ui.geometry.Offset, zoom: Float, rotation: Float) -> Unit
+) {
     AsyncImage(
         model = item.imageUrl,
         contentDescription = null,
         modifier = Modifier
-            .offset { IntOffset(offsetX.toInt(), offsetY.toInt()) }
+            .offset { IntOffset(item.offsetX.roundToInt(), item.offsetY.roundToInt()) }
             .graphicsLayer(
-                scaleX = scale,
-                scaleY = scale,
-                rotationZ = rotationDeg
+                scaleX = item.scale,
+                scaleY = item.scale,
+                rotationZ = item.rotation
             )
             .pointerInput(Unit) {
-                detectTransformGestures { _, pan, zoom, rotationRadians ->
-                    offsetX += pan.x
-                    offsetY += pan.y
-                    scale *= zoom
-                    val deltaDeg = Math.toDegrees(rotationRadians.toDouble()).toFloat()
-                    rotationDeg += deltaDeg
+                detectTransformGestures { _, pan, zoom, rotation ->
+                    // Pass the deltas directly
+                    onTransform(pan, zoom, rotation)
                 }
             }
     )
 }
+
 
 @Composable
 fun EditTextDialog(
@@ -157,4 +143,3 @@ fun EditTextDialog(
         }
     )
 }
-

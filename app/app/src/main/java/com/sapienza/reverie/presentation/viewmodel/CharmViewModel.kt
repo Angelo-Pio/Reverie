@@ -1,15 +1,28 @@
 package com.sapienza.reverie.presentation.viewmodel
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.util.Log
+import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.gson.Gson
 import com.sapienza.reverie.domain.model.CharmModel
 import com.sapienza.reverie.domain.model.CharmWithUserModel
 import com.sapienza.reverie.domain.model.UserCommentModel
 import com.sapienza.reverie.domain.model.UserModel
 import com.sapienza.reverie.domain.repository.ApiClient
+import com.sapienza.reverie.presentation.ui.components.Sticker
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.File
+import java.io.FileOutputStream
+import java.time.LocalDateTime
 
 class CharmViewModel() : ViewModel() {
     private val _charms = MutableStateFlow<List<CharmModel>>(emptyList())
@@ -31,8 +44,25 @@ class CharmViewModel() : ViewModel() {
     private val _charmCreator = MutableStateFlow<UserModel?>(null)
     val charmCreator = _charmCreator.asStateFlow()
 
+    val overlayItems = mutableStateListOf<Sticker>()
 
-    fun loadCharms(userId : Long) {
+
+    fun addSticker(sticker: Sticker) {
+        overlayItems.add(sticker)
+    }
+
+    fun updateSticker(index: Int, sticker: Sticker) {
+        if (index >= 0 && index < overlayItems.size) {
+            overlayItems[index] = sticker
+        }
+    }
+
+    fun clearSticker() {
+        overlayItems.clear()
+    }
+
+
+    fun loadCharms(userId: Long) {
         viewModelScope.launch {
             try {
                 val result = ApiClient.service.getAllCharms(userId = userId)
@@ -43,7 +73,7 @@ class CharmViewModel() : ViewModel() {
         }
     }
 
-    fun getComments(charmId : Long) {
+    fun getComments(charmId: Long) {
         viewModelScope.launch {
             try {
                 val result = ApiClient.service.getCharmComments(charmId)
@@ -76,7 +106,7 @@ class CharmViewModel() : ViewModel() {
         }
     }
 
-    fun postComment(userId : Long, charmId : Long, text : String){
+    fun postComment(userId: Long, charmId: Long, text: String) {
         viewModelScope.launch {
             try {
                 val result = ApiClient.service.postComment(userId, charmId, text)
@@ -87,7 +117,7 @@ class CharmViewModel() : ViewModel() {
         }
     }
 
-    fun collectCharm(userId : Long, charmId : Long){
+    fun collectCharm(userId: Long, charmId: Long) {
         viewModelScope.launch {
             try {
                 val result = ApiClient.service.addToCollection(userId = userId, charmId = charmId)
@@ -104,11 +134,11 @@ class CharmViewModel() : ViewModel() {
         _newlyCollectedCharm.value = null
     }
 
-    fun getCharmCreator(charm_id : Long) {
+    fun getCharmCreator(charm_id: Long) {
 
         viewModelScope.launch {
             try {
-                _charmCreator.value =  ApiClient.service.madeBy(charm_id = charm_id)
+                _charmCreator.value = ApiClient.service.madeBy(charm_id = charm_id)
 
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -121,7 +151,55 @@ class CharmViewModel() : ViewModel() {
         _charmCreator.value = null
     }
 
-    // In /app/src/main/java/com/sapienza/reverie/presentation/viewmodel/CharmViewModel.kt
+    fun createCharm(
+        context: Context,
+        userId: Long,
+        bitmap: Bitmap,
+        description: String
+    ) {
+        viewModelScope.launch {
+            try {
+                // 1. Create the DTO object
+                val charmDto = CharmModel(
+                    id = 0,
+                    description = description,
+                    pictureUrl = "",
+                    created_at = LocalDateTime.now().toString(),
+                    comments = emptyList()
+                )
+
+                // 2. Convert the DTO to a JSON string using Gson
+                val charmDtoJson = Gson().toJson(charmDto)
+
+                // 3. Create a RequestBody from the JSON string
+                val charmDtoRequestBody =
+                    charmDtoJson.toRequestBody("application/json".toMediaTypeOrNull())
+
+                // 4. Prepare the file part
+                val file = File(context.cacheDir, "charm_image_${System.currentTimeMillis()}.png")
+                val outputStream = FileOutputStream(file)
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+                outputStream.close()
+                val requestFile = file.asRequestBody("image/png".toMediaTypeOrNull())
+                val body = MultipartBody.Part.createFormData("file", file.name, requestFile)
+
+                // 5. Make the API call with the correct parameters
+                Log.e("CharmViewModel", "Charm created successfully ${charmDtoJson.toString()}")
+                val res = ApiClient.service.createCharm(
+                    user_id = userId,
+                    file = body,
+                    charmDto = charmDtoRequestBody
+                )
+
+                // 6. Clean up
+                file.delete()
+
+            } catch (e: Exception) {
+                // It's crucial to log this to see any errors during development
+                e.printStackTrace()
+            }
+        }
+    }
 
     fun clearAllData() {
         _charms.value = emptyList()
@@ -131,8 +209,6 @@ class CharmViewModel() : ViewModel() {
         _newlyCollectedCharm.value = null
         _charmCreator.value = null
     }
-
-
 
 
 }

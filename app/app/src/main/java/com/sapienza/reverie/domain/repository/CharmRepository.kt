@@ -59,4 +59,8 @@ interface CharmRepository {
     @GET("charm/madeBy")
     suspend fun madeBy(@Query("charm_id") charm_id : Long) : UserModel
 
+    @Multipart
+    @POST("charms")
+    suspend fun createCharm(@Part("user_id") user_id : Long, @Part file : MultipartBody.Part, @Part("charmDto") charmDto : RequestBody) : CharmModel
+
 }

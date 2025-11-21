@@ -7,6 +7,7 @@ import androidx.compose.runtime.remember
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
+import com.sapienza.reverie.presentation.ui.components.Sticker
 import com.sapienza.reverie.presentation.ui.screen.CharmEditScreen
 import com.sapienza.reverie.presentation.ui.screen.CharmScreen
 import com.sapienza.reverie.presentation.ui.screen.CollectionScreen
@@ -26,7 +27,7 @@ fun AppNavigation() {
 
     val backstack = remember { mutableStateListOf<Screen>(Screen.Login) }
     val sessionViewModel: SessionViewModel = viewModel()
-    val charmViewModel : CharmViewModel = viewModel()
+    val charmViewModel: CharmViewModel = viewModel()
 
 
 
@@ -41,7 +42,7 @@ fun AppNavigation() {
                     onLoginClick = { backstack.add(Screen.Home) },
                     onSignUpClick = { backstack.add(Screen.SignUp) },
 
-                    onGoogleSignInClick = {backstack.add(Screen.Home)}
+                    onGoogleSignInClick = { backstack.add(Screen.Home) }
                 )
             }
             entry<Screen.SignUp> {
@@ -54,7 +55,7 @@ fun AppNavigation() {
             entry<Screen.Home> {
                 DashboardScreen(
                     onScanClick = { backstack.add(Screen.ScanQR) }, // TODO : this should redirect to a screen used to scan a QR code not share it !
-                    onEditClick = { backstack.add(Screen.SearchImage) },
+                    onEditClick = { backstack.add(Screen.SearchMainImage) },
                     onLogOutClick = {
                         charmViewModel.clearAllData()
                         sessionViewModel.logout()
@@ -65,18 +66,38 @@ fun AppNavigation() {
                     onCharmClick = { charm -> backstack.add(Screen.Charm(charm)) }
                 )
             }
+            entry<Screen.SearchMainImage> {
+                SearchImageScreen(
+                    onHomeClick = { backstack.add(Screen.Home) },
+                    onImageClick = { charmImage -> backstack.add(Screen.CharmEdit(charmImage)) },
+                )
+            }
             entry<Screen.CharmEdit> { screen ->
-                //TODO: search implementation, saving image etc.
                 CharmEditScreen(
                     imageUrl = screen.image,
                     onCancelClick = { backstack.add(Screen.Home) },
-                    onSaveClick = { backstack.add(Screen.Collection) }
+                    onSaveClick = { backstack.add(Screen.Collection) },
+                    onAddImageClick = { backstack.add(Screen.SearchImage) }
+                )
+
+            }
+            entry<Screen.SearchImage> {
+                SearchImageScreen(
+                    onHomeClick = { backstack.removeAt(backstack.lastIndex) },
+                    onImageClick = { charmImage ->
+                        charmViewModel.addSticker(
+                            Sticker.ImageItem(
+                                id = System.currentTimeMillis(), imageUrl = charmImage
+                            )
+                        );
+                        backstack.removeAt(backstack.lastIndex)
+                    },
                 )
             }
             entry<Screen.Collection> {
                 CollectionScreen(
                     onCharmClick = { charmModel -> backstack.add(Screen.Charm(charmModel)) },
-                    onEditClick = { backstack.add(Screen.SearchImage) },
+                    onEditClick = { backstack.add(Screen.SearchMainImage) },
                     onHomeClick = { backstack.add(Screen.Home) },
                     onCollectionClick = { backstack.add(Screen.Collection) },
                 )
@@ -88,7 +109,7 @@ fun AppNavigation() {
                     onHomeClick = { backstack.add(Screen.Home) },
                     onQRShareClick = { charm_id -> backstack.add(Screen.ShareQr(charm_id = charm_id)) },
 
-                )
+                    )
             }
             entry<Screen.ShareQr> {
                 //TODO: this will need an argument to generate the QR code from a link
@@ -113,16 +134,7 @@ fun AppNavigation() {
                     }
                 )
             }
-            entry<Screen.SearchImage> {
-                /*TODO: search is used for take first background picture and add stickers, this should be impleemented
-                * TODO:  selected image should be passed to edit screen
-                * */
 
-                SearchImageScreen(
-                    onHomeClick = { backstack.add(Screen.Home) },
-                    onImageClick = { charmImage -> backstack.add(Screen.CharmEdit(charmImage)) },
-                )
-            }
 
             entry<Screen.Reveal> { screen ->
                 RevealScreen(
