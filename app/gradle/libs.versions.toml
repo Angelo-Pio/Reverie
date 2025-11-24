@@ -17,6 +17,7 @@ composeBom = "2024.09.00"
 googleid = "1.1.1"
 foundationLayout = "1.9.5"
 runtime = "1.0.0-alpha08"
+volley = "1.2.1"
 
 
 [libraries]
@@ -44,6 +45,7 @@ androidx-compose-material3 = { group = "androidx.compose.material3", name = "mat
 googleid = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "googleid" }
 androidx-compose-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout", version.ref = "foundationLayout" }
 androidx-runtime = { group = "androidx.xr.runtime", name = "runtime", version.ref = "runtime" }
+volley = { group = "com.android.volley", name = "volley", version.ref = "volley" }
 
 [plugins]
 jetbrains-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinSerialization"}

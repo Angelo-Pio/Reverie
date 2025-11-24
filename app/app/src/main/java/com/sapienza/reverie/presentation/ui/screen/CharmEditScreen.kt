@@ -1,6 +1,7 @@
 package com.sapienza.reverie.presentation.ui.screen
 
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,6 +23,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import coil.size.Precision
 import com.sapienza.reverie.presentation.ui.components.CharmDescriptionDialog
 import com.sapienza.reverie.presentation.ui.components.DraggableOverlayImage
 import com.sapienza.reverie.presentation.ui.components.DraggableOverlayText
@@ -122,8 +125,15 @@ fun CharmEditScreen(
                             .aspectRatio(2f / 3f),
                         contentAlignment = Alignment.Center,
                     ) {
+                        val imageRequest = ImageRequest.Builder(LocalContext.current)
+                            .data(imageUrl)
+                            .crossfade(true)
+                            // This is the key change: tells Coil to load the image at its original size
+                            .precision(Precision.EXACT)
+                            .build()
+                        Log.e("CharmEditScreen", "ImageRequest: $imageUrl")
                         AsyncImage(
-                            model = imageUrl,
+                            model = imageRequest,
                             contentDescription = null,
                             modifier = Modifier.fillMaxSize(),
                             contentScale = ContentScale.Crop
@@ -145,9 +155,10 @@ fun CharmEditScreen(
                                             )
                                             charmViewModel.updateSticker(index, updatedSticker)
                                         },
-                                        onTextChange = { newText ->
+                                        onTextChange = { newText, newColor ->
                                             val currentItem = charmViewModel.overlayItems[index] as Sticker.TextItem
-                                            charmViewModel.updateSticker(index, currentItem.copy(text = newText))
+
+                                            charmViewModel.updateSticker(index, currentItem.copy(text = newText, color = newColor))
                                         }
                                     )
                                 }

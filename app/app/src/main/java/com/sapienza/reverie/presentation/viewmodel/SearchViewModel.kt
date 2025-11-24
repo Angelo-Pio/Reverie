@@ -37,7 +37,7 @@ class SearchViewModel : ViewModel() {
             try {
                 val results = googleSearchRepository.searchImages(query)
                 _searchState.value = _searchState.value.copy(
-                    searchResults = results.mapNotNull { it.image?.thumbnail },
+                    searchResults = results.mapNotNull { it.link },
                     isLoading = false
                 )
             } catch (e: Exception) {

@@ -2,6 +2,7 @@ package com.sapienza.reverie.domain.util
 
 // app/src/main/java/com/sapienza/reverie/domain/repository/GoogleSearchRepository.kt
 
+import android.util.Log
 import com.google.gson.annotations.SerializedName
 import com.sapienza.reverie.properties.ApiProperties
 import okhttp3.OkHttpClient
@@ -57,6 +58,8 @@ class GoogleSearchRepository {
 
     suspend fun searchImages(query: String): List<ImageResult> {
         val response = apiService.searchImages(query = query)
+        Log.i("GoogleSearchRepository", "Response: $response")
         return response.items ?: emptyList()
     }
 }
+

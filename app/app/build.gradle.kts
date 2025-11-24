@@ -55,6 +55,7 @@ dependencies {
     implementation(libs.googleid)
     implementation(libs.androidx.compose.foundation.layout)
     implementation(libs.androidx.runtime)
+    implementation(libs.volley)
 
     val cameraxVersion = "1.3.4" // Use a recent version
     implementation("androidx.camera:camera-core:$cameraxVersion")
