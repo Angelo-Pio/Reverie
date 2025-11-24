@@ -1,3 +1,7 @@
+
+import java.util.Properties
+import java.io.FileInputStream
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -19,6 +23,19 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        
+        // Load secrets from local.properties
+        val localProperties = Properties()
+        val localPropertiesFile = rootProject.file("local.properties")
+        if (localPropertiesFile.exists()) {
+            localProperties.load(localPropertiesFile.inputStream())
+        }
+
+        buildConfigField("String", "GOOGLE_SIGN_IN_CLIENT_ID", "\"${localProperties.getProperty("GOOGLE_SIGN_IN_CLIENT_ID", "")}\"")
+        buildConfigField("String", "CLIENT_ID", "\"${localProperties.getProperty("CLIENT_ID", "")}\"")
+        buildConfigField("String", "CLIENT_SECRET", "\"${localProperties.getProperty("CLIENT_SECRET", "")}\"")
+        buildConfigField("String", "GOOGLE_API_KEY", "\"${localProperties.getProperty("GOOGLE_API_KEY", "")}\"")
+        buildConfigField("String", "GOOGLE_CX", "\"${localProperties.getProperty("GOOGLE_CX", "")}\"")
     }
 
     buildTypes {

@@ -1,8 +1,6 @@
 package com.sapienza.reverie.domain.model
 
 import android.annotation.SuppressLint
-import android.os.Build
-import androidx.annotation.RequiresApi
 import com.sapienza.reverie.properties.ApiProperties
 import kotlinx.serialization.Serializable
 import java.time.LocalDateTime

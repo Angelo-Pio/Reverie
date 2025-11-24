@@ -4,7 +4,6 @@ package com.sapienza.reverie.domain.util
 
 import android.content.Context
 
-import android.os.Bundle
 import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
 import androidx.credentials.exceptions.GetCredentialException
