@@ -1,3 +1,5 @@
 /build
 
-/src/main/java/com/sapienza/reverie/properties/ApiProperties.kt
+
+app/app/src/main/java/com/sapienza/reverie/properties/ApiProperties.kt
+back-end/Docker/reverie.jar
