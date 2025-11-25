@@ -120,25 +120,27 @@ fun CharmScreen(
                     .aspectRatio(2f / 3f), contentAlignment = Alignment.TopEnd
             ) {
                 Charm(modifier = Modifier.padding(15.dp), charmModel = charmModel)
-                ExpandingActionButtons(
-                    isExpanded = isExpanded,
-                    onExpandToggle = { isExpanded = !isExpanded },
-                    onQRShareClick = { onQRShareClick(charmModel.id) },
-                    onLinkShareClick = {
-                        val url =
-                            "http://localhost:6001/reverie/api/charm/download/${charmModel.id}"
+                if (creator?.id == user?.id) {
+                    ExpandingActionButtons(
+                        isExpanded = isExpanded,
+                        onExpandToggle = { isExpanded = !isExpanded },
+                        onQRShareClick = { onQRShareClick(charmModel.id) },
+                        onLinkShareClick = {
+                            val url =
+                                "http://localhost:6001/reverie/api/charm/download/${charmModel.id}"
 
-                        val sendIntent = Intent().apply {
-                            action = Intent.ACTION_SEND
-                            putExtra(Intent.EXTRA_TEXT, url) // The content to be shared
-                            type = "text/plain"
+                            val sendIntent = Intent().apply {
+                                action = Intent.ACTION_SEND
+                                putExtra(Intent.EXTRA_TEXT, url) // The content to be shared
+                                type = "text/plain"
+                            }
+
+                            val shareIntent = Intent.createChooser(sendIntent, "Share Charm Link")
+
+                            context.startActivity(shareIntent)
                         }
-
-                        val shareIntent = Intent.createChooser(sendIntent, "Share Charm Link")
-
-                        context.startActivity(shareIntent)
-                    }
-                )
+                    )
+                }
                 Box(
                     modifier = modifier
                         .align(Alignment.BottomEnd)

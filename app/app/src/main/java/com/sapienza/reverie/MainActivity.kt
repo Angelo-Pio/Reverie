@@ -30,9 +30,10 @@ import com.sapienza.reverie.ui.theme.ReverieTheme
 
 /*
     TODO:
-        * password hashing
         * JWT for session handling
-        * increase Image quality when creating images, color text ?
+        * GPS for localization (where you created/commented ? )
+        * cannot share images you have not created !
+
  */
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
