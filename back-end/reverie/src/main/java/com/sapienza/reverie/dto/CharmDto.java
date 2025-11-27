@@ -21,6 +21,10 @@ public class CharmDto {
 
     private List<CommentDto> comments;
 
+    private String collected_in;
+
+    private String creator;
+
     //private User creator;
 
     //private List<User> collectors;

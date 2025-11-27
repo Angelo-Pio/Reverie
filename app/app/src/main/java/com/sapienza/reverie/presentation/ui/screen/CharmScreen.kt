@@ -13,11 +13,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -46,15 +49,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import com.sapienza.reverie.domain.model.UserModel
+import com.sapienza.reverie.presentation.ui.components.CircularButton
 import com.sapienza.reverie.presentation.ui.components.CommentPopUp
+import com.sapienza.reverie.presentation.ui.components.ExpandingInfoButton
 import com.sapienza.reverie.presentation.ui.components.NavCharmBar
 import com.sapienza.reverie.presentation.viewmodel.SessionViewModel
 import com.sapienza.reverie.ui.theme.GradientButton
 import com.sapienza.reverie.ui.theme.MagentaLogo30
 import com.sapienza.reverie.ui.theme.MagentaLogo50
 
-val GradientButtonPrimary= listOf(
+val GradientButtonPrimary = listOf(
 
     Color(0xFFEAF9FF),  // Light Blue
     Color(0xFFEAF9FF),  // Light Blue
@@ -63,6 +69,7 @@ val GradientButtonPrimary= listOf(
 
 
 )
+
 @Composable
 fun CharmScreen(
     modifier: Modifier = Modifier,
@@ -77,6 +84,7 @@ fun CharmScreen(
     val sessionViewModel: SessionViewModel = viewModel()
 
     var isExpanded by remember { mutableStateOf(false) }
+    var isInfoExpanded by remember { mutableStateOf(false) }
     val charmViewModel: CharmViewModel = viewModel()
 
     // Launch loadCharms once when the screen is shown
@@ -141,34 +149,13 @@ fun CharmScreen(
                         }
                     )
                 }
-                Box(
-                    modifier = modifier
-                        .align(Alignment.BottomEnd)
-                        .padding(top = 20.dp)
-                        .clip(RoundedCornerShape(12.dp)) // Clip the Box to a circle
-                        .background(Brush.horizontalGradient(colors = GradientButtonPrimary))
+                ExpandingInfoButton(
+                    isExpanded = isInfoExpanded,
+                    onExpandToggle = {isInfoExpanded = !isInfoExpanded},
+                    modifier = Modifier.align(Alignment.BottomEnd),
+                    charmModel = charmModel
+                )
 
-                ){
-
-                Button(
-                    onClick = {},
-                    //elevation = ButtonDefaults.elevatedButtonElevation(12.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Transparent,
-                        contentColor = MaterialTheme.colorScheme.onPrimary,
-
-                        )
-
-                ) {
-                    val username = if (creator?.id == user?.id) {
-                        "You"
-                    } else {
-                        creator?.username
-                            ?: "Unknown" // Use creator's username or "Unknown" as a fallback
-                    }
-                    Text("Made by ${username}")
-                }
-                }
 
 
             }

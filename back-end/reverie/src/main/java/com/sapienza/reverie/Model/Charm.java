@@ -24,6 +24,9 @@ public class Charm {
     @Column(unique = true, nullable = false)
     private String pictureUrl;
 
+    @Column(nullable = true)
+    private String collected_in;
+
     @Column(nullable = false)
     private LocalDateTime created_at;
 

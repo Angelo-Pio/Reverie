@@ -6,7 +6,7 @@ import com.sapienza.reverie.BuildConfig
 
 class ApiProperties {
     companion object {
-        const val SERVER_IP = "192.168.1.37"
+        const val SERVER_IP = "192.168.1.11"
 
         val API_BASE_PATH = "http://${SERVER_IP}:6001/reverie/api/"
         val API_IMAGES_BASE_PATH = "http://${SERVER_IP}:6001/reverie/api/images?filename="

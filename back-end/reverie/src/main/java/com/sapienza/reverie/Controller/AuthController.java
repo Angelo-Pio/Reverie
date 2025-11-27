@@ -6,10 +6,12 @@ import com.sapienza.reverie.Repository.UserRepository;
 import com.sapienza.reverie.Service.CharmService;
 import com.sapienza.reverie.Service.GoogleTokenVerifier;
 import com.sapienza.reverie.Service.Mapper;
+import com.sapienza.reverie.security.PasswordManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.GeneralSecurityException;
@@ -21,6 +23,9 @@ public class AuthController {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    private PasswordManager passwordManager;
 
 
     @Autowired
@@ -37,8 +42,7 @@ public class AuthController {
         Optional<User> userOptional = userRepository.findByEmail(email);
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-            if (password.equals(user.getPassword())) {
-                System.out.println("Wrong password");
+            if (passwordManager.matches( password, user.getPassword())) {
                 return new ResponseEntity<>(Mapper.toUserDto(user), HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);

@@ -31,13 +31,12 @@ class SessionViewModel : ViewModel() {
 
     fun loginUser(email: String, password: String) {
         viewModelScope.launch {
-            // 2. Clear previous errors before trying to log in
+
             _loginError.value = null
             try {
                 val user = ApiClient.service.login(email, password)
                 _user.value = user
             } catch (e: Exception) {
-                // 3. Catch exceptions and set the error message
                 e.printStackTrace()
                 if (e is retrofit2.HttpException && e.code() == 401) {
                     _loginError.value = "Email or password incorrect. Please try again."

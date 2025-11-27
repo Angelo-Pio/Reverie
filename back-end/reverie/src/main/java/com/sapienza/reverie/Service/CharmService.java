@@ -7,6 +7,7 @@ import com.sapienza.reverie.Repository.CharmRepository;
 import com.sapienza.reverie.Repository.CommentRepository;
 import com.sapienza.reverie.Repository.UserRepository;
 import com.sapienza.reverie.dto.*;
+import com.sapienza.reverie.security.PasswordManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.*;
@@ -30,6 +31,9 @@ public class CharmService {
 
     @Autowired
     private FileStorageService fileStorageService;
+
+    @Autowired
+    private PasswordManager passwordManager;
 
 
 
@@ -134,7 +138,7 @@ public class CharmService {
         Optional<User> user = userRepository.findById(user_id);
 
         if (user.isEmpty()) {
-            // Return 404 if user not found
+
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .body("User with id " + user_id + " not found");
@@ -155,7 +159,7 @@ public class CharmService {
                 .body(savedCharm);
     }
 
-    public ResponseEntity<?> addCharmToUserCollection( Long charm_id,  Long user_id) {
+    public ResponseEntity<?> addCharmToUserCollection(Long charm_id, Long user_id, String collected_in) {
         Optional<User> user = userRepository.findById(user_id);
 
         if (user.isEmpty()) {
@@ -179,6 +183,7 @@ public class CharmService {
         }
 
         charm.get().getCollectors().add(user.get());
+        charm.get().setCollected_in(collected_in);
         user.get().getCollected_charms().add(charm.get());
         Charm savedCharm = charmRepository.save(charm.get());
         userRepository.save(user.get());
@@ -213,14 +218,15 @@ public class CharmService {
             return ResponseEntity.badRequest().body("User with email " + userDto.getEmail() + " already exists");
         }
 
-        if(userOptional.get().getPassword().length() < 8){
+        if(userDto.getPassword().length() < 8){
             return ResponseEntity.badRequest().body("Password should be at least 8 characters long");
         }
 
         User user = new User();
         user.setUsername(userDto.getUsername());
         user.setEmail(userDto.getEmail());
-        user.setPassword(userDto.getPassword());
+
+        user.setPassword(passwordManager.hashPassword(userDto.getPassword()));
         user.setProfilePictureUrl(fileStorageService.storeAndGetUrl(file));
         userRepository.save(user);
 

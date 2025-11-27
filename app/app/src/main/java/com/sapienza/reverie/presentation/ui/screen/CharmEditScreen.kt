@@ -34,6 +34,7 @@ import com.sapienza.reverie.presentation.ui.components.Sticker
 import com.sapienza.reverie.presentation.ui.components.TopBar
 import com.sapienza.reverie.presentation.util.CaptureBitmap
 import com.sapienza.reverie.presentation.viewmodel.CharmViewModel
+import com.sapienza.reverie.presentation.viewmodel.SessionViewModel
 import com.sapienza.reverie.properties.ApiProperties
 import com.sapienza.reverie.ui.theme.ReverieTheme
 import dev.shreyaspatil.capturable.controller.rememberCaptureController
@@ -43,6 +44,7 @@ fun CharmEditScreen(
     onCancelClick: () -> Unit = {}, onSaveClick: () -> Unit = {}, onAddImageClick: () -> Unit = {}, imageUrl: String
 ) {
     val charmViewModel: CharmViewModel = viewModel()
+    val sessionViewModel : SessionViewModel = viewModel()
     val items = charmViewModel.overlayItems
     val context = LocalContext.current
 
@@ -68,9 +70,8 @@ fun CharmEditScreen(
             },
             onConfirm = { description ->
                 capturedBitmap?.let { bitmap ->
-                    // TODO: Replace '1L' with the actual logged-in user ID
-                    val userId = 1L
-                    charmViewModel.createCharm(context, userId, bitmap, description)
+
+                    charmViewModel.createCharm(context, sessionViewModel.user.value!!.id, bitmap, description)
                 }
                 showDescriptionDialog = false
                 capturedBitmap = null
@@ -131,7 +132,7 @@ fun CharmEditScreen(
                             // This is the key change: tells Coil to load the image at its original size
                             .precision(Precision.EXACT)
                             .build()
-                        Log.e("CharmEditScreen", "ImageRequest: $imageUrl")
+
                         AsyncImage(
                             model = imageRequest,
                             contentDescription = null,

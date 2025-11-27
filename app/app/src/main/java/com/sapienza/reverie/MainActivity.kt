@@ -30,9 +30,9 @@ import com.sapienza.reverie.ui.theme.ReverieTheme
 
 /*
     TODO:
-        * JWT for session handling
-        * GPS for localization (where you created/commented ? )
-        * cannot share images you have not created !
+        * JWT for session handling --> maybe not necessary
+        * GPS for localization (where you collected ? )
+
 
  */
 class MainActivity : ComponentActivity() {

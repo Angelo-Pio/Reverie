@@ -100,8 +100,8 @@ public class ReverieController {
     }
 
     @PostMapping("/charms/collect")
-    public ResponseEntity<?> addCharmToUserCollection(@RequestParam Long charm_id, @RequestParam Long user_id) {
-        return charmService.addCharmToUserCollection(charm_id, user_id);
+    public ResponseEntity<?> addCharmToUserCollection(@RequestParam Long charm_id, @RequestParam Long user_id, @RequestParam(required = false) String collected_in) {
+        return charmService.addCharmToUserCollection(charm_id, user_id, collected_in);
     }
 
     @GetMapping("/user/profilePicture")

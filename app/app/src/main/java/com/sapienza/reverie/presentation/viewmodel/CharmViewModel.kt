@@ -117,10 +117,12 @@ class CharmViewModel() : ViewModel() {
         }
     }
 
-    fun collectCharm(userId: Long, charmId: Long) {
+    fun collectCharm(userId: Long, charmId: Long, collected_in: String?) {
         viewModelScope.launch {
             try {
-                val result = ApiClient.service.addToCollection(userId = userId, charmId = charmId)
+                val result = ApiClient.service.addToCollection(
+                    userId = userId, charmId = charmId ,
+                    collected_in = collected_in)
                 _newlyCollectedCharm.value = result
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -159,23 +161,25 @@ class CharmViewModel() : ViewModel() {
     ) {
         viewModelScope.launch {
             try {
-                // 1. Create the DTO object
+
                 val charmDto = CharmModel(
                     id = 0,
                     description = description,
                     pictureUrl = "",
                     created_at = LocalDateTime.now().toString(),
+                    collected_in = null,
+                    creator = null,
                     comments = emptyList()
                 )
 
-                // 2. Convert the DTO to a JSON string using Gson
+
                 val charmDtoJson = Gson().toJson(charmDto)
 
-                // 3. Create a RequestBody from the JSON string
+
                 val charmDtoRequestBody =
                     charmDtoJson.toRequestBody("application/json".toMediaTypeOrNull())
 
-                // 4. Prepare the file part
+
                 val file = File(context.cacheDir, "charm_image_${System.currentTimeMillis()}.png")
                 val outputStream = FileOutputStream(file)
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
@@ -183,8 +187,8 @@ class CharmViewModel() : ViewModel() {
                 val requestFile = file.asRequestBody("image/png".toMediaTypeOrNull())
                 val body = MultipartBody.Part.createFormData("file", file.name, requestFile)
 
-                // 5. Make the API call with the correct parameters
-                Log.e("CharmViewModel", "Charm created successfully ${charmDtoJson.toString()}")
+
+
                 val res = ApiClient.service.createCharm(
                     user_id = userId,
                     file = body,

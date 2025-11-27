@@ -61,6 +61,7 @@ public class Mapper {
         charmDto.setPictureUrl(charm.getPictureUrl());
         charmDto.setDescription(charm.getDescription());
         charmDto.setCreated_at(charm.getCreated_at());
+        charmDto.setCreator(charm.getCreator().getUsername());
         return charmDto;
     }
 

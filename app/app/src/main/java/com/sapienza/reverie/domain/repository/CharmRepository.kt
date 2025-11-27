@@ -2,13 +2,10 @@ package com.sapienza.reverie.domain.repository
 
 import com.sapienza.reverie.domain.model.CharmModel
 import com.sapienza.reverie.domain.model.CharmWithUserModel
-import com.sapienza.reverie.domain.model.CommentModel
 import com.sapienza.reverie.domain.model.UserCommentModel
 import com.sapienza.reverie.domain.model.UserModel
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import retrofit2.Response
-import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
@@ -39,7 +36,7 @@ interface CharmRepository {
     suspend fun postComment(@Query("user_id")userId: Long, @Query("charm_id") charmId: Long,@Query("comment_content") text: String)
 
     @POST("charms/collect")
-    suspend fun addToCollection(@Query("user_id")userId: Long, @Query("charm_id") charmId: Long) : CharmModel
+    suspend fun addToCollection(@Query("user_id") userId: Long, @Query("charm_id") charmId: Long, @Query("collected_in") collected_in: String?) : CharmModel
 
     @Multipart
     @POST("user") // The endpoint URL for creating a user

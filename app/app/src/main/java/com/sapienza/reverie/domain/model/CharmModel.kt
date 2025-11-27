@@ -11,6 +11,8 @@ data class CharmModel(
     val description: String,
     val pictureUrl: String,
     val created_at: String?,
+    val collected_in: String?,
+    val creator: String?,
     val comments: List<CommentModel>?
 
 ){
@@ -23,6 +25,8 @@ data class CharmModel(
                 description = "Default Charm",
                 pictureUrl = ApiProperties.API_FOO_IMAGE_PATH,
                 created_at = LocalDateTime.now().toString(),
+                collected_in = "Rome",
+                creator = "John Doe",
                 comments = emptyList() // It's safer to use an empty list than null
             )
         }
