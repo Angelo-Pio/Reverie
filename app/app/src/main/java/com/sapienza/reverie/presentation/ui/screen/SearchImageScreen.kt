@@ -1,6 +1,9 @@
 // app/src/main/java/com/sapienza/reverie/presentation/ui/screen/SearchImageScreen.kt
 package com.sapienza.reverie.presentation.ui.screen
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -23,6 +26,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.draw.shadow
 import androidx.compose.foundation.background
+import androidx.compose.material.icons.filled.Upload
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -36,6 +40,13 @@ fun SearchImageScreen(
     searchViewModel: SearchViewModel = viewModel()
 ) {
     val searchState by searchViewModel.searchState.collectAsState()
+    val imagePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let {
+            onImageClick(it.toString())
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -45,10 +56,12 @@ fun SearchImageScreen(
             )
         },
         bottomBar = {
-            Box(Modifier
-                .clip(RoundedCornerShape(24.dp))
-                .padding(6.dp)
-                .shadow(elevation = 6.dp)) {
+            Box(
+                Modifier
+                    .clip(RoundedCornerShape(24.dp))
+                    .padding(6.dp)
+                    .shadow(elevation = 6.dp)
+            ) {
                 NavigationBar(
                     modifier = modifier.background(brush = Brush.horizontalGradient(colors = NavBarColor)),
                     containerColor = Color.Transparent,
@@ -58,6 +71,14 @@ fun SearchImageScreen(
                         label = { Text("Cancel") },
                         selected = false,
                         onClick = onHomeClick
+                    )
+                    NavigationBarItem(
+                        icon = { Icon(Icons.Filled.Upload, contentDescription = "Upload") },
+                        label = { Text("Upload") },
+                        selected = false,
+                        onClick = {
+                            imagePickerLauncher.launch("image/*")
+                        }
                     )
                 }
             }
