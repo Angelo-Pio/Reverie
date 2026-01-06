@@ -32,7 +32,7 @@ import com.sapienza.reverie.presentation.viewmodel.SessionViewModel
 import com.sapienza.reverie.ui.theme.ReverieTheme
 import kotlinx.coroutines.delay
 
-//TODO: once qr code is scanned and a charm is collected go here and create an animation
+
 
 @Composable
 fun CollectionScreen(

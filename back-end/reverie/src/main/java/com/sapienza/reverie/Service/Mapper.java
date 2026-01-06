@@ -62,6 +62,7 @@ public class Mapper {
         charmDto.setDescription(charm.getDescription());
         charmDto.setCreated_at(charm.getCreated_at());
         charmDto.setCreator(charm.getCreator().getUsername());
+        charmDto.setCollected_in(charm.getCollected_in());
         return charmDto;
     }
 

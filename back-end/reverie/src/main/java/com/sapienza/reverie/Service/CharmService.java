@@ -100,10 +100,9 @@ public class CharmService {
             return ResponseEntity.badRequest().body("User not found");
         }
         List<Charm> collectedCharms = user.get().getCollected_charms();
-         Collections.shuffle(collectedCharms);
 
         List<Charm> random10 = collectedCharms.stream()
-            .limit(10)
+            .limit(5)
             .toList();
 
         return new ResponseEntity<>(Mapper.toCharmDtoList(random10), HttpStatus.OK);
@@ -114,7 +113,7 @@ public class CharmService {
         if (charms.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(charms);
+        return ResponseEntity.ok(Mapper.toCharmDtoList(charms.get()));
     }
 
     public ResponseEntity<?> getAllCharmsCollected( Long user_id) {
@@ -122,7 +121,7 @@ public class CharmService {
         if (charms.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(charms);
+        return ResponseEntity.ok(Mapper.toCharmDtoList(charms.get()));
     }
 
     public ResponseEntity<?> getCharmById( Long charm_id) {
@@ -130,7 +129,7 @@ public class CharmService {
         if (charmOptional.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(charmOptional.get(), HttpStatus.OK);
+        return new ResponseEntity<>(Mapper.toCharmDto(charmOptional.get()), HttpStatus.OK);
     }
 
 
@@ -156,7 +155,7 @@ public class CharmService {
 
         return ResponseEntity
                 .ok()
-                .body(savedCharm);
+                .body(Mapper.toCharmDto(savedCharm));
     }
 
     public ResponseEntity<?> addCharmToUserCollection(Long charm_id, Long user_id, String collected_in) {
@@ -190,7 +189,7 @@ public class CharmService {
 
         return ResponseEntity
                 .ok()
-                .body(savedCharm);
+                .body(Mapper.toCharmDto(savedCharm));
     }
 
     public ResponseEntity<?> getUserProfilePicture( Long user_id) {
@@ -242,7 +241,7 @@ public class CharmService {
         }
         List<Charm> charms = created.get();
         charms.addAll(collected.get());
-        return ResponseEntity.ok(charms);
+        return ResponseEntity.ok(Mapper.toCharmDtoList(charms));
     }
 
     public ResponseEntity<?> downloadCharm(Long charmId) {
